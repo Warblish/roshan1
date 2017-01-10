@@ -1,4 +1,3 @@
-/matches
 /deploy/lib
 /deploy/bin
 *.rms
@@ -11,7 +10,6 @@
 *.swp
 *.pyc
 .gradle
-/client/
 *.jar
 *.iml
 *.ipr
