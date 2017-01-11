@@ -17,6 +17,7 @@ public strictfp class LumberjackMain {
             	}
             	task1.runTurn();
             	if(task1.isComplete()){
+            		Clock.yield();
             		break;
             	}
                 Clock.yield();
