@@ -4,6 +4,7 @@ import battlecode.common.*;
 public strictfp class TaskTravelTo extends Task {
     @SuppressWarnings("unused")
     private MapLocation target;
+    
     private float threshold = 1; //DISTANCE TO TARGET LOCATION THAT IS ACCEPTABLE
     @Override
     public void runTurn() throws GameActionException {

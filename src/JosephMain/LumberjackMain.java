@@ -11,7 +11,8 @@ public strictfp class LumberjackMain {
     	task1 = new TaskTravelTo();
     	((TaskTravelTo) task1).setThreshold(2);
     	MapLocation[] archon_locs = rc.getInitialArchonLocations(rc.getTeam().opponent());
-    	while(true){
+    	task1.setTrigger(new String[] {"ENEMYROBOTS"});
+    	while(!task1.isTriggered()){
     		try {
             	if(archon_locs.length > 0){
                 	((TaskTravelTo) task1).setTarget(archon_locs[0]);	
