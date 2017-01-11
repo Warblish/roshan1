@@ -26,7 +26,7 @@ public strictfp class RobotPlayer {
                 break;
             case LUMBERJACK:
                 //LumberjackMain.run();
-            	runLumberjack();
+            	LumberjackMain.run();
                 break;
         }
 	}

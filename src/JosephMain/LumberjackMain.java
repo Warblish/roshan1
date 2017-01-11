@@ -13,7 +13,7 @@ public strictfp class LumberjackMain {
     	while(true){
     		try {
             	if(archon_locs.length > 0){
-                	((TaskKill) task1).setTargetLocation(archon_locs[0]);	
+                	((TaskTravelTo) task1).setTarget(archon_locs[0]);	
             	}
             	task1.runTurn();
             	if(task1.isComplete()){
