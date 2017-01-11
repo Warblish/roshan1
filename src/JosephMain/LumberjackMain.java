@@ -9,6 +9,7 @@ public strictfp class LumberjackMain {
     public static void run() throws GameActionException {
     	rc = RobotPlayer.rc;
     	task1 = new TaskTravelTo();
+    	((TaskTravelTo) task1).setThreshold(2);
     	MapLocation[] archon_locs = rc.getInitialArchonLocations(rc.getTeam().opponent());
     	while(true){
     		try {
