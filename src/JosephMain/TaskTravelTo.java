@@ -9,7 +9,7 @@ public strictfp class TaskTravelTo extends Task {
     @Override
     public void runTurn() throws GameActionException {
     	if(!isComplete()) {
-    		RobotPlayer.tryMove(new Direction(rc.getLocation(), target));
+    		RobotPlayer.tryMoveSwerve(new Direction(rc.getLocation(), target));
     	}
     	super.runTurn();
 	}
