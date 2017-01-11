@@ -69,7 +69,8 @@ public strictfp class RobotPlayer {
         System.out.println("I'm a gardener!");
 
         try{
-	        scoutMap();
+	        MapLocation[] farm_points = new MapLocation[4];
+	        /*scoutMap();
 	        MapLocation[] archon_locs = rc.getInitialArchonLocations(rc.getTeam());
 	        int amt_archons = archon_locs.length;
 	        float[] distance_to_corners = new float[3];
@@ -118,7 +119,8 @@ public strictfp class RobotPlayer {
 	        	best_corner = bottom_right;
 	        }
 	        
-	        MapLocation[] farm_points = new MapLocation[4];
+	        
+
 	    	//Generate 10 new farm points for the gardener to tend over
 	        //Test program: Stack 5 trees in an X-row and then rotate around and stack on the other side
 	    	//Check if the corner is the top or the bottom of the map, will affect which way the code stacks (will always go away from the center)
@@ -129,22 +131,12 @@ public strictfp class RobotPlayer {
 	    			for(int i = 0; i<5; i++){
 	        			farm_points[i] = new MapLocation((float)(best_corner.x+(i+1)-0.5),(float)(best_corner.y-0.5));
 	        		}
-	    			/*
-	        		for(int i = 5; i<10; i++){
-	        			farm_points[i] = new MapLocation((float)(best_corner.x+(i+1)-0.5),(float)(best_corner.y-2.5));
-	        		}
-	        		*/
 	    		}
 	    		else{
 	    			//The corner is on the right
 	    			for(int i = 0; i<5; i++){
 	        			farm_points[i] = new MapLocation((float)(best_corner.x+(i-1)+0.5),(float)(best_corner.y-0.5));
 	        		}
-	    			/*
-	        		for(int i = 5; i<10; i++){
-	        			farm_points[i] = new MapLocation((float)(best_corner.x+(i-1)+0.5),(float)(best_corner.y-2.5));
-	        		}
-	        		*/
 	    		}
 	    	} else{
 	    		//On the bottom
@@ -153,25 +145,19 @@ public strictfp class RobotPlayer {
 	    			for(int i = 0; i<5; i++){
 	        			farm_points[i] = new MapLocation((float)(best_corner.x+(i+1)-0.5),(float)(best_corner.y+0.5));
 	        		}
-	    			/*
-	        		for(int i = 5; i<10; i++){
-	        			farm_points[i] = new MapLocation((float)(best_corner.x+(i+1)-0.5),(float)(best_corner.y+2.5));
-	        		}
-	        		*/
 	    		}
 	    		else{
 	    			//The corner is on the right
 	    			for(int i = 0; i<5; i++){
 	        			farm_points[i] = new MapLocation((float)(best_corner.x+(i-1)+0.5),(float)(best_corner.y+0.5));
 	        		}
-	    			/*
-	        		for(int i = 5; i<10; i++){
-	        			farm_points[i] = new MapLocation((float)(best_corner.x+(i-1)+0.5),(float)(best_corner.y+2.5));
-	        		}
-	        		*/
 	    		}
 	    	}
-	        
+	        */
+        	farm_points[0] = new MapLocation(rc.readBroadcast(0), rc.readBroadcast(1));
+        	farm_points[1] = new MapLocation(rc.readBroadcast(0), rc.readBroadcast(1));
+        	farm_points[2] = new MapLocation(rc.readBroadcast(0), rc.readBroadcast(1));
+        	farm_points[3] = new MapLocation(rc.readBroadcast(0), rc.readBroadcast(1));
 	    	int next_farm_point = 0;
 	        // The code you want your robot to perform every round should be in this loop
 	        while (true) {
@@ -180,19 +166,16 @@ public strictfp class RobotPlayer {
 	            		//Navigate to the designated MapLocation to plant tree if there is not already tree in location
 	            		//And there are enough team bullets, and there are less than 5 trees planted already
 	                	float distance_to_target;
-	                	if(best_corner.y == top){
+	                	/*if(best_corner.y == top){
 	                		//Corner spawns on the top
 	                		distance_to_target = rc.getLocation().distanceTo(new MapLocation(farm_points[next_farm_point].x, farm_points[next_farm_point].y-1));
 	                	} else{
 	                		//Corner spawns on the bottom
 	                		distance_to_target = rc.getLocation().distanceTo(new MapLocation(farm_points[next_farm_point].x, farm_points[next_farm_point].y+1));
-	                	}
-	                	if(distance_to_target > 0.0f){
-	                		if(rc.canMove(farm_points[next_farm_point])){
-	                			rc.move(farm_points[next_farm_point]);
-	                		} else{
-	                			System.out.println("Error, cannot move to set farm point, obstacle detected");
-	                		}
+	                	} */
+	                	distance_to_target = rc.getLocation().distanceTo(new MapLocation(farm_points[next_farm_point].x, farm_points[next_farm_point].y));
+	                	if(distance_to_target > 1f){
+	                		tryMove(new Direction(rc.getLocation(), farm_points[next_farm_point]));
 	                	} else{
 	                		if(rc.canPlantTree(Direction.getNorth())){
 	                			//If valid location, plants new tree and increments next location to plant a tree in
@@ -208,34 +191,36 @@ public strictfp class RobotPlayer {
 	            		float percentageDamaged = 0.8f;
 	            		for(int j = 0; j<next_farm_point; j++){
 	            			TreeInfo tree_info = rc.senseTreeAtLocation(farm_points[j]);
-	            			if(tree_info.health <= (percentageDamaged*tree_info.getMaxHealth())){
-	        					Direction treeToRobot = new Direction(rc.getLocation(), tree_info.getLocation());
-	        					float distance = rc.getLocation().distanceTo(tree_info.getLocation());
-	            				if(distance <= GameConstants.BULLET_TREE_RADIUS+1){
-	            					rc.water(farm_points[j]);
-	            					Clock.yield();
-	            				}else{
-	            					//Move to the left if the tree is to the left
-	            					float x_component = treeToRobot.getDeltaX(distance);
-	            					//If x_component is negative, then go west, else go east
-	            					if(x_component < 0){
-	            						if(x_component < -1){
-	            							//Move maximum amount if the robot cannot make it
-	            							rc.move(Direction.getWest(), 1);
-	            						} else{
-	                						rc.move(Direction.getWest(), x_component);
-	            						}
-	            					} else{
-	            						if(x_component > 1){
-	            							//Move maximum amount if the robot cannot make it
-	            							rc.move(Direction.getEast(), 1);
-	            						} else{
-	                						rc.move(Direction.getEast(), x_component);
-	            						}
-	            					}
-	            					Clock.yield();
-	            				}
-	            					//Requires movement closer to the tree, move closer then yield to end turn if still too far away
+	            			if(tree_info != null) {
+		            			if(tree_info.health <= (percentageDamaged*tree_info.getMaxHealth())){
+		        					Direction treeToRobot = new Direction(rc.getLocation(), tree_info.getLocation());
+		        					float distance = rc.getLocation().distanceTo(tree_info.getLocation());
+		            				if(distance <= GameConstants.BULLET_TREE_RADIUS+1){
+		            					rc.water(farm_points[j]);
+		            					Clock.yield();
+		            				}else{
+		            					//Move to the left if the tree is to the left
+		            					float x_component = treeToRobot.getDeltaX(distance);
+		            					//If x_component is negative, then go west, else go east
+		            					if(x_component < 0){
+		            						if(x_component < -1){
+		            							//Move maximum amount if the robot cannot make it
+		            							rc.move(Direction.getWest(), 1);
+		            						} else{
+		                						rc.move(Direction.getWest(), x_component);
+		            						}
+		            					} else{
+		            						if(x_component > 1){
+		            							//Move maximum amount if the robot cannot make it
+		            							rc.move(Direction.getEast(), 1);
+		            						} else{
+		                						rc.move(Direction.getEast(), x_component);
+		            						}
+		            					}
+		            					Clock.yield();
+		            				}
+		            					//Requires movement closer to the tree, move closer then yield to end turn if still too far away
+		            			}
 	            			}
 	            		}
 	            	}
