@@ -7,10 +7,13 @@ public strictfp class SoldierMain {
     @SuppressWarnings("unused")
     public static void run() throws GameActionException {
     	rc = RobotPlayer.rc;
-    	task = new TaskTravelTo();
+    	task = new TaskKill();
+    	MapLocation[] archon_locs = rc.getInitialArchonLocations(rc.getTeam().opponent());
         while (true) {      	
             try {
-            	((TaskTravelTo) task).setTarget(new MapLocation(rc.readBroadcast(0), rc.readBroadcast(1)));
+            	if(archon_locs.length > 0){
+                	((TaskKill) task).setTargetLocation(archon_locs[0]);	
+            	}
             	task.runTurn();
                 Clock.yield();
             } catch (Exception e) {
