@@ -13,6 +13,7 @@ public strictfp class RobotPlayer {
                 ArchonMain.run();
                 break;
             case GARDENER:
+            	//Uncomment this to run the macro strategy
                 //GardenerMain.run();
             	runGardener();
                 break;

@@ -18,11 +18,11 @@ public strictfp class ArchonMain {
                 Direction dir = RobotPlayer.randomDirection();
 
                 // Randomly attempt to build a gardener in this direction
-                if(rc.getRoundNum() < 10 && rc.getTeamBullets() > 201.0f){
+                if(rc.canHireGardener(dir) && rc.getRoundNum() < 10 && rc.getTeamBullets() > 201.0f){
                 	rc.hireGardener(dir);
                 }
                 
-                if (rc.canHireGardener(dir) && Math.random() < .001) {
+                if (rc.canHireGardener(dir) && Math.random() < .01) {
                     rc.hireGardener(dir);
                 }
 
