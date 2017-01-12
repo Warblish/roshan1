@@ -13,6 +13,13 @@ public strictfp class RobotPlayer {
                 ArchonMain.run();
                 break;
             case GARDENER:
+            	double selector = Math.random();
+            	if(selector <= 0.40d){
+            		GardenerMain.run();
+            	} else{
+            		runGardener();
+            	}
+            	
             	//Uncomment this to run the macro strategy
                 GardenerMain.run();
             	//runGardener();
