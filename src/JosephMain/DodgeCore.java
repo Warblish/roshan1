@@ -29,7 +29,7 @@ public strictfp class DodgeCore {
     public boolean isSafeInFuture(MapLocation spot, int turns) {
     	return false;
     }
-    public Maneuver createDodgePlan() {
+    /*public Maneuver createDodgePlan() {
     	return null;
-    }
+    }*/
 }

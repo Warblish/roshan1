@@ -1,7 +1,7 @@
 package JosephMain;
 import battlecode.common.*;
 
-public strictfp class TaskTravelTo extends Task {
+public strictfp class TaskGroupUp extends Task {
     @SuppressWarnings("unused")
     private MapLocation target;
     
@@ -22,7 +22,7 @@ public strictfp class TaskTravelTo extends Task {
     public float getThreshold() {
     	return threshold;
     }
-    public TaskTravelTo() {
+    public TaskGroupUp() {
     	super();
     }
     @Override

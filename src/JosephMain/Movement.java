@@ -7,35 +7,23 @@ import battlecode.common.*;
 public strictfp class Movement {
     static RobotController rc;
     @SuppressWarnings("unused")
-
-    /**
-     * Returns a random Direction
-     * @return a random Direction
-     */
+    private static boolean chopping = true;
+    public static float chopDegreeThreshold = 40;
+    public static void setChopping(boolean c) {
+    	chopping = c;
+    }
+    public static void enableChopping() { 
+    	chopping = true;
+    }
+    public static void disableChopping() {
+    	chopping = false;
+    }
     static Direction randomDirection() {
         return new Direction((float)Math.random() * 2 * (float)Math.PI);
     }
-
-    /**
-     * Attempts to move in a given direction, while avoiding small obstacles directly in the path.
-     *
-     * @param dir The intended direction of movement
-     * @return true if a move was performed
-     * @throws GameActionException
-     */
     static boolean tryMove(Direction dir) throws GameActionException {
         return tryMove(dir,20,3);
     }
-
-    /**
-     * Attempts to move in a given direction, while avoiding small obstacles direction in the path.
-     *
-     * @param dir The intended direction of movement
-     * @param degreeOffset Spacing between checked directions (degrees)
-     * @param checksPerSide Number of extra directions checked on each side, if intended direction was unavailable
-     * @return true if a move was performed
-     * @throws GameActionException
-     */
     static boolean tryMove(Direction dir, float degreeOffset, int checksPerSide) throws GameActionException {
 
         // First, try intended direction
@@ -43,13 +31,37 @@ public strictfp class Movement {
             rc.move(dir);
             return true;
         }
-
         // Now try a bunch of similar angles
         boolean moved = false;
         int currentCheck = 1;
 
         while(currentCheck<=checksPerSide) {
             // Try the offset of the left side
+        	boolean chopFlag = true;
+            if(chopping && currentCheck > 2 && rc.getType() == RobotType.LUMBERJACK && chopFlag) {
+            	chopFlag = false; //only do this once per function call
+            	System.out.println("CHOPPED1");
+            	TreeInfo[] trees = rc.senseNearbyTrees();
+            	System.out.println(trees.length);
+            	for(int i = 0; i < trees.length; i++) {
+            		TreeInfo tree = trees[i];
+                	System.out.println("CHOPPED2");
+            		if(tree.getTeam() != rc.getTeam()) { //not friendly tree
+                    	System.out.println("CHOPPED3");
+            			if(Math.abs(dir.degreesBetween(new Direction(rc.getLocation(), tree.getLocation()))) < chopDegreeThreshold) {
+            			//if the trees direction is within 40 (or threshold) degrees of our direction
+            				
+                        	System.out.println("CHOPPED4");
+            				if(rc.canChop(tree.getLocation())) {
+            					rc.chop(tree.getLocation());
+            					return true;
+            				}
+            			} else {
+                        	System.out.println("CHOPPED5 " + Math.abs(dir.degreesBetween(new Direction(rc.getLocation(), tree.getLocation()))));
+            			}
+            		}
+            	}
+            }
             if(rc.canMove(dir.rotateLeftDegrees(degreeOffset*currentCheck))) {
                 rc.move(dir.rotateLeftDegrees(degreeOffset*currentCheck));
                 return true;
@@ -82,9 +94,33 @@ public strictfp class Movement {
         // Now try a bunch of similar angles
         boolean moved = false;
         int currentCheck = 0;
-
         while(currentCheck<=checksPerSide) {
             // Try the offset of the left side
+        	boolean chopFlag = true;
+            if(chopping && currentCheck > 2 && rc.getType() == RobotType.LUMBERJACK && chopFlag) {
+            	chopFlag = false; //only do this once per function call
+            	System.out.println("CHOPPED1");
+            	TreeInfo[] trees = rc.senseNearbyTrees();
+            	System.out.println(trees.length);
+            	for(int i = 0; i < trees.length; i++) {
+            		TreeInfo tree = trees[i];
+                	System.out.println("CHOPPED2");
+            		if(tree.getTeam() != rc.getTeam()) { //not friendly tree
+                    	System.out.println("CHOPPED3");
+            			if(Math.abs(dir.degreesBetween(new Direction(rc.getLocation(), tree.getLocation()))) < chopDegreeThreshold) {
+            			//if the trees direction is within 40 (or threshold) degrees of our direction
+            				
+                        	System.out.println("CHOPPED4");
+            				if(rc.canChop(tree.getLocation())) {
+            					rc.chop(tree.getLocation());
+            					return true;
+            				}
+            			} else {
+                        	System.out.println("CHOPPED5 " + Math.abs(dir.degreesBetween(new Direction(rc.getLocation(), tree.getLocation()))));
+            			}
+            		}
+            	}
+            }
             if(rc.canMove(dir.rotateLeftDegrees(degreeOffset*currentCheck))) {
             	if(currentCheck > 3 && !(swerveRight&&isSwerving)) {
             		swerveRight = false;
