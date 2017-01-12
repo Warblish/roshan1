@@ -5,6 +5,9 @@ public strictfp class TaskTrackKillArchon extends Task {
     @SuppressWarnings("unused")
     private Team enemy = rc.getTeam().opponent();
     private float threshold = 1;
+    private boolean archonInRange = false;
+    private boolean complete = false;
+    private int buffer = 0;
     @Override
     public void runTurn() throws GameActionException {
     	RobotInfo[] robots = rc.senseNearbyRobots(RobotType.LUMBERJACK.bodyRadius+GameConstants.LUMBERJACK_STRIKE_RADIUS, enemy);
@@ -18,11 +21,25 @@ public strictfp class TaskTrackKillArchon extends Task {
         robots = rc.senseNearbyRobots(-1,enemy);
         //Set the active tracking to an Archon, or just a random robot if there is no archon
         RobotInfo activetrack = null;
+        boolean archonFlag = false;
     	for(RobotInfo info : robots){
     		if(info.getType() == RobotType.ARCHON){
+    			archonInRange = true;
     			activetrack = info;
+    			archonFlag = true;
     			break;
     		}
+    	}
+    	if(!archonFlag && archonInRange == true) { //no archons found, but there was one last loop
+    		if(buffer >= 3) {
+    			archonInRange = false;
+    			complete = true; //we did it!!!!!!!
+    		} else {
+    			buffer++; //loop for 3 turns for good measure
+    		}
+    		
+    	} else {
+    		buffer = 0; //reset buffer, archon is back
     	}
     	if(activetrack == null && robots.length > 0){
     		activetrack = robots[0];
@@ -48,8 +65,8 @@ public strictfp class TaskTrackKillArchon extends Task {
     
     @Override
     public boolean isComplete() {
-    	//Function is never complete, keeps tracking until there are no archons, then attack units randomly
-    	return false;
+    	//Function complete when there was an archon, but now theres not!!!!
+    	return complete;
     }
     
     /**

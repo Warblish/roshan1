@@ -5,18 +5,12 @@ public strictfp class RobotPlayer {
     static RobotController rc;
     @SuppressWarnings("unused")
     public static void run(RobotController rc) throws GameActionException {
-
-        // This is the RobotController object. You use it to perform actions from this robot,
-        // and to get information on its current status.
         RobotPlayer.rc = rc;
-        Movement.rc = rc;
+    	setup(); //code to be run once, when the game starts
 
-        // Here, we've separated the controls into a different method for each RobotType.
-        // You can add the missing ones or rewrite this into your own control structure.
         switch (rc.getType()) {
             case ARCHON:
                 ArchonMain.run();
-            	//runArchon();
                 break;
             case GARDENER:
                 //GardenerMain.run();
@@ -26,13 +20,13 @@ public strictfp class RobotPlayer {
                 SoldierMain.run();
                 break;
             case LUMBERJACK:
-                //LumberjackMain.run();
             	LumberjackMain.run();
                 break;
         }
 	}
-
-    static void runArchon() throws GameActionException {
+    private static void setup() {
+        Movement.rc = rc;
+    	DataMain.archon_locs = rc.getInitialArchonLocations(rc.getTeam().opponent());
 
     }
     static Direction randomDirection() {

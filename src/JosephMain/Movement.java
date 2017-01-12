@@ -94,7 +94,7 @@ public strictfp class Movement {
                     return true;
             	} else {
             		if(isSwerving) {
-            			if(dir.rotateLeftDegrees(degreeOffset*currentCheck).getAngleDegrees() - prevDir.opposite().getAngleDegrees() < resetThreshold) {
+            			if(dir.rotateLeftDegrees(degreeOffset*currentCheck).getAngleDegrees() - prevDir.opposite().getAngleDegrees() < resetThreshold && swerveRight) {
             				//DONT GO BACK TO WHERE WE JUST WERE
             				
             			} else {
@@ -122,7 +122,7 @@ public strictfp class Movement {
                     return true;
             	} else {
             		if(isSwerving) {
-            			if(dir.rotateRightDegrees(degreeOffset*currentCheck).getAngleDegrees() - prevDir.opposite().getAngleDegrees() < resetThreshold) {
+            			if(dir.rotateRightDegrees(degreeOffset*currentCheck).getAngleDegrees() - prevDir.opposite().getAngleDegrees() < resetThreshold && !swerveRight) {
             				//DONT GO BACK TO WHERE WE JUST WERE
             				
             			} else {
