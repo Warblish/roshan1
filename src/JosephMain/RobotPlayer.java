@@ -9,13 +9,14 @@ public strictfp class RobotPlayer {
         // This is the RobotController object. You use it to perform actions from this robot,
         // and to get information on its current status.
         RobotPlayer.rc = rc;
+        Movement.rc = rc;
 
         // Here, we've separated the controls into a different method for each RobotType.
         // You can add the missing ones or rewrite this into your own control structure.
         switch (rc.getType()) {
             case ARCHON:
-                //ArchonMain.run();
-            	runArchon();
+                ArchonMain.run();
+            	//runArchon();
                 break;
             case GARDENER:
                 //GardenerMain.run();
@@ -32,44 +33,11 @@ public strictfp class RobotPlayer {
 	}
 
     static void runArchon() throws GameActionException {
-        System.out.println("I'm an archon!");
 
-        // The code you want your robot to perform every round should be in this loop
-        while (true) {
-
-            // Try/catch blocks stop unhandled exceptions, which cause your robot to explode
-            try {
-
-                // Generate a random direction
-                Direction dir = randomDirection();
-
-                // Randomly attempt to build a gardener in this direction
-                if(rc.getRoundNum() < 10 && rc.getTeamBullets() > 201.0f){
-                	rc.hireGardener(dir);
-                }
-                
-                if (rc.canHireGardener(dir) && Math.random() < .001) {
-                    rc.hireGardener(dir);
-                }
-
-                // Move randomly
-                tryMove(randomDirection());
-
-                // Broadcast archon's location for other robots on the team to know
-                MapLocation myLocation = rc.getLocation();
-                rc.broadcast(0,(int)myLocation.x);
-                rc.broadcast(1,(int)myLocation.y);
-
-                // Clock.yield() makes the robot wait until the next turn, then it will perform this loop again
-                Clock.yield();
-
-            } catch (Exception e) {
-                System.out.println("Archon Exception");
-                e.printStackTrace();
-            }
-        }
     }
-
+    static Direction randomDirection() {
+        return new Direction((float)Math.random() * 2 * (float)Math.PI);
+    }
 	static void runGardener() throws GameActionException {
         System.out.println("I'm a gardener!");
 
@@ -93,7 +61,7 @@ public strictfp class RobotPlayer {
                 }
 
                 // Move randomly
-                tryMove(randomDirection());
+                Movement.tryMove(randomDirection());
 
                 // Clock.yield() makes the robot wait until the next turn, then it will perform this loop again
                 Clock.yield();
@@ -129,7 +97,7 @@ public strictfp class RobotPlayer {
                 }
 
                 // Move randomly
-                tryMove(randomDirection());
+                Movement.tryMove(randomDirection());
 
                 // Clock.yield() makes the robot wait until the next turn, then it will perform this loop again
                 Clock.yield();
@@ -167,10 +135,10 @@ public strictfp class RobotPlayer {
                         MapLocation enemyLocation = robots[0].getLocation();
                         Direction toEnemy = myLocation.directionTo(enemyLocation);
 
-                        tryMove(toEnemy);
+                        Movement.tryMove(toEnemy);
                     } else {
                         // Move Randomly
-                        tryMove(randomDirection());
+                        Movement.tryMove(randomDirection());
                     }
                 }
 
@@ -182,146 +150,6 @@ public strictfp class RobotPlayer {
                 e.printStackTrace();
             }
         }
-    }
-
-    /**
-     * Returns a random Direction
-     * @return a random Direction
-     */
-    static Direction randomDirection() {
-        return new Direction((float)Math.random() * 2 * (float)Math.PI);
-    }
-
-    /**
-     * Attempts to move in a given direction, while avoiding small obstacles directly in the path.
-     *
-     * @param dir The intended direction of movement
-     * @return true if a move was performed
-     * @throws GameActionException
-     */
-    static boolean tryMove(Direction dir) throws GameActionException {
-        return tryMove(dir,20,3);
-    }
-
-    /**
-     * Attempts to move in a given direction, while avoiding small obstacles direction in the path.
-     *
-     * @param dir The intended direction of movement
-     * @param degreeOffset Spacing between checked directions (degrees)
-     * @param checksPerSide Number of extra directions checked on each side, if intended direction was unavailable
-     * @return true if a move was performed
-     * @throws GameActionException
-     */
-    static boolean tryMove(Direction dir, float degreeOffset, int checksPerSide) throws GameActionException {
-
-        // First, try intended direction
-        if (rc.canMove(dir)) {
-            rc.move(dir);
-            return true;
-        }
-
-        // Now try a bunch of similar angles
-        boolean moved = false;
-        int currentCheck = 1;
-
-        while(currentCheck<=checksPerSide) {
-            // Try the offset of the left side
-            if(rc.canMove(dir.rotateLeftDegrees(degreeOffset*currentCheck))) {
-                rc.move(dir.rotateLeftDegrees(degreeOffset*currentCheck));
-                return true;
-            }
-            // Try the offset on the right side
-            if(rc.canMove(dir.rotateRightDegrees(degreeOffset*currentCheck))) {
-                rc.move(dir.rotateRightDegrees(degreeOffset*currentCheck));
-                return true;
-            }
-            // No move performed, try slightly further
-            currentCheck++;
-        }
-
-        // A move never happened, so return false.
-        return false;
-    }
-    public static boolean swerveRight = false;
-    public static boolean isSwerving = false;
-    public static Direction prevDir;
-    static boolean tryMoveSwerve(Direction dir) throws GameActionException {
-    	return tryMoveSwerve(dir, 20, 7, 40);
-    }
-    static boolean tryMoveSwerve(Direction dir, float degreeOffset, int checksPerSide, float resetThreshold) throws GameActionException {
-        // First, try intended direction
-        /*if (rc.canMove(dir)) { //WE DONT WANT THIS, I CHANGED CUURENT CHECK TO START AT 0 TO ACCOUNT THIS WITH THE SWERVE ALGORITHM
-            rc.move(dir);
-            return true;
-        }*/
-
-        // Now try a bunch of similar angles
-        boolean moved = false;
-        int currentCheck = 0;
-
-        while(currentCheck<=checksPerSide) {
-            // Try the offset of the left side
-            if(rc.canMove(dir.rotateLeftDegrees(degreeOffset*currentCheck))) {
-            	if(currentCheck > 3 && !(swerveRight&&isSwerving)) {
-            		swerveRight = false;
-            		isSwerving = true;
-                    rc.move(dir.rotateLeftDegrees(degreeOffset*currentCheck));
-                    prevDir = dir.rotateLeftDegrees(degreeOffset*currentCheck);
-                    return true;
-            	} else {
-            		if(isSwerving) {
-            			if(dir.rotateLeftDegrees(degreeOffset*currentCheck).getAngleDegrees() - prevDir.opposite().getAngleDegrees() < resetThreshold) {
-            				//DONT GO BACK TO WHERE WE JUST WERE
-            				
-            			} else {
-            				//this is ok, carry on
-                			isSwerving = false;
-                            rc.move(dir.rotateLeftDegrees(degreeOffset*currentCheck));
-                            //prevDir = dir.rotateLeftDegrees(degreeOffset*currentCheck);
-                            return true;           				
-            			}
-            		} else {
-            			isSwerving = false;
-                        rc.move(dir.rotateLeftDegrees(degreeOffset*currentCheck));
-                        //prevDir = dir.rotateLeftDegrees(degreeOffset*currentCheck);
-                        return true;
-            		}
-            	}
-            }
-            // Try the offset on the right side
-            if(rc.canMove(dir.rotateRightDegrees(degreeOffset*currentCheck))) {
-            	if(currentCheck > 3 && !(!swerveRight && isSwerving)) {//not swerving left already
-            		swerveRight = true;
-            		isSwerving = true;
-                    rc.move(dir.rotateRightDegrees(degreeOffset*currentCheck));
-                    prevDir = dir.rotateRightDegrees(degreeOffset*currentCheck);
-                    return true;
-            	} else {
-            		if(isSwerving) {
-            			if(dir.rotateRightDegrees(degreeOffset*currentCheck).getAngleDegrees() - prevDir.opposite().getAngleDegrees() < resetThreshold) {
-            				//DONT GO BACK TO WHERE WE JUST WERE
-            				
-            			} else {
-            				//this is ok, carry on
-                			isSwerving = false;
-                            rc.move(dir.rotateRightDegrees(degreeOffset*currentCheck));
-                            //prevDir = dir.rotateRightDegrees(degreeOffset*currentCheck);
-                            return true;           				
-            			}
-            		} else {
-            			isSwerving = false;
-                        rc.move(dir.rotateRightDegrees(degreeOffset*currentCheck));
-                        //prevDir = dir.rotateRightDegrees(degreeOffset*currentCheck);
-                        return true;
-            		}
-            	}
-            }
-            // No move performed, try slightly further
-            currentCheck++;
-        }
-
-        // A move never happened, so return false.
-        return false;
     }
 
     /**

@@ -9,7 +9,7 @@ public strictfp class TaskKill extends Task {
     @Override
     public void runTurn() throws GameActionException {
 		if(rc.getLocation().distanceTo(target) > threshold){
-    		RobotPlayer.tryMove(new Direction(rc.getLocation(), target));
+    		Movement.tryMove(new Direction(rc.getLocation(), target));
 		}
     	RobotInfo[] nearbyRobots = rc.senseNearbyRobots(-1, enemy);
     	// If there are some...
