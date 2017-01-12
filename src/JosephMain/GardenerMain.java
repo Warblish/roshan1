@@ -10,7 +10,7 @@ public strictfp class GardenerMain {
     @SuppressWarnings("unused")
     public static void run() throws GameActionException {
     	rc = RobotPlayer.rc;
-    	task = new TaskGarden();
+    	task = new TaskGarden2();
     	spawnloc = rc.getLocation();
     	//Get the nearby Archon
     	RobotInfo info[] = rc.senseNearbyRobots(1.5f, rc.getTeam());
@@ -25,8 +25,8 @@ public strictfp class GardenerMain {
     	}
         while (true) {
             try {
-            	if(rc.canMove(init_direction) && rc.getLocation().distanceTo(spawnloc) < 2.0f && tryToMoveOnStart){
-            		rc.move(init_direction);
+            	if(rc.canMove(init_direction) && rc.getLocation().distanceTo(spawnloc) < 3.0f && tryToMoveOnStart){
+            		Movement.tryMove(init_direction);
             	} else{
                 	task.runTurn();
                 	tryToMoveOnStart = false;

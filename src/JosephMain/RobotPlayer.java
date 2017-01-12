@@ -14,8 +14,8 @@ public strictfp class RobotPlayer {
                 break;
             case GARDENER:
             	//Uncomment this to run the macro strategy
-                //GardenerMain.run();
-            	runGardener();
+                GardenerMain.run();
+            	//runGardener();
                 break;
             case SOLDIER:
                 SoldierMain.run();
