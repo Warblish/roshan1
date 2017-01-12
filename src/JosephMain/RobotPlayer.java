@@ -13,15 +13,22 @@ public strictfp class RobotPlayer {
                 ArchonMain.run();
                 break;
             case GARDENER:
-            	double selector = Math.random();
-            	if(selector <= 0.40d){
-            		GardenerMain.run();
-            	} else{
+            	if(rc.getRoundNum() == 1){
             		runGardener();
-            	}
-            	
+            		System.out.println("CREATE attacker");
+            	} else if(rc.getRoundNum() == 2){
+            		GardenerMain.run();
+            		System.out.println("CREATE farmer");
+            	} else{
+            		double selector = Math.random();
+            		if(selector <= 0.40d){
+                		GardenerMain.run();
+                	} else{
+                		runGardener();
+                	}
+            	}       	
             	//Uncomment this to run the macro strategy
-                GardenerMain.run();
+                //GardenerMain.run();
             	//runGardener();
                 break;
             case SOLDIER:
@@ -58,7 +65,7 @@ public strictfp class RobotPlayer {
                 Direction dir = randomDirection();
 
                 // Randomly attempt to build a soldier or lumberjack in this direction
-                if (rc.canBuildRobot(RobotType.LUMBERJACK, dir)) {
+                if (rc.getTeamBullets() >= 250.0 && rc.canBuildRobot(RobotType.LUMBERJACK, dir)) {
                     rc.buildRobot(RobotType.LUMBERJACK, dir);
                 }
 
