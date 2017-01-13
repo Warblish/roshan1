@@ -15,7 +15,7 @@ public strictfp class TaskKillOnDemand extends Task {
     		setTargetLocation(new MapLocation(rc.readBroadcast(8),rc.readBroadcast(9)));
     		//code copied from kill
     		if(rc.getLocation().distanceTo(target) > threshold){
-        		Movement.tryMove(new Direction(rc.getLocation(), target));
+        		Movement.tryMoveSwerve(new Direction(rc.getLocation(), target));
     		}
         	RobotInfo[] nearbyRobots = rc.senseNearbyRobots(-1, enemy);
         	// If there are some...

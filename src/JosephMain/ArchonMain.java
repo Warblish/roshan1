@@ -94,7 +94,7 @@ public strictfp class ArchonMain {
                 MapLocation myLocation = rc.getLocation();
                 rc.broadcast(0,(int)myLocation.x);
                 rc.broadcast(1,(int)myLocation.y);
-                //Broadcast.broadcastKillRequest(DataMain.archon_locs[1]);
+                Broadcast.broadcastKillRequest(DataMain.archon_locs[0]);
                 // Clock.yield() makes the robot wait until the next turn, then it will perform this loop again
                 Clock.yield();
 

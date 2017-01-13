@@ -51,7 +51,7 @@ public strictfp class TaskTrackKillArchon extends Task {
             MapLocation enemyLocation = activetrack.getLocation();
             Direction toEnemy = myLocation.directionTo(enemyLocation);
 
-            Movement.tryMove(toEnemy);
+            Movement.tryMoveSwerve(toEnemy);
         } else {
             // Move Randomly
             Movement.tryMove(randomDirection());
