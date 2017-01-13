@@ -2,9 +2,7 @@ package JosephMain;
 import battlecode.common.*;
 
 public strictfp class TaskTrackKillArchon extends Task {
-    @SuppressWarnings("unused")
     private Team enemy = rc.getTeam().opponent();
-    private float threshold = 1;
     private boolean archonInRange = false;
     private boolean complete = false;
     private int buffer = 0;
