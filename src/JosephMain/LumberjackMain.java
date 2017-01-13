@@ -9,17 +9,17 @@ public strictfp class LumberjackMain {
     public static void run() throws GameActionException {
     	rc = RobotPlayer.rc;
     	int x = 0;
-		task1 = new TaskKillOnDemand();
+		task1 = new TaskAttackOnDemand();
     	while(true) {
-    		if(x != DataMain.archon_locs.length) {
+    		/*if(x != DataMain.archon_locs.length) {
 	    		eliminateArchon(x);
 	    		x++;
     		} else {
     			Clock.yield();
-    		}
+    		}*/
     		//eliminateArchon(0);
-    		//task1.runTurn();
-    		//Clock.yield();
+    		task1.runTurn();
+    		Clock.yield();
     	}
 	}
     public static void eliminateArchon(int id) {
