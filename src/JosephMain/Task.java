@@ -15,6 +15,11 @@ public strictfp class Task {
     	if(hasTrigger) {
     		triggered = senseTrigger(triggers);
     	}
+    	//Get target amount of bullets if you can win
+    	//Runs for every robot running a task to maximum win speed
+    	if(rc.getTeamBullets() >= (1000-rc.getTeamVictoryPoints())*10){
+        	rc.donate(100);
+        }
 	}
     public Task() {
     	rc = RobotPlayer.rc;
