@@ -14,11 +14,11 @@ public strictfp class RobotPlayer {
                 break;
             case GARDENER:
             	if(rc.getRoundNum() == 1){
-            		runGardener();
-            		System.out.println("CREATE attacker");
-            	} else if(rc.getRoundNum() == 2){
             		GardenerMain.run();
             		System.out.println("CREATE farmer");
+            	} else if(rc.getRoundNum() == 11){
+            		runGardener();
+            		System.out.println("CREATE attacker");
             	} else{
             		double selector = Math.random();
             		if(selector <= 0.40d){

@@ -8,15 +8,17 @@ public strictfp class TaskGarden2 extends Task {
     
     @Override
     public void runTurn() throws GameActionException {
-    	if(rc.getTeamBullets() >= GameConstants.BULLET_TREE_COST){
-    		if(rc.canPlantTree(Direction.getNorth())){
-        		rc.plantTree(Direction.getNorth());
-        	} else if(rc.canPlantTree(Direction.getSouth())){
-        		rc.plantTree(Direction.getSouth());
-        	} else if(rc.canPlantTree(Direction.getEast())){
-        		rc.plantTree(Direction.getEast());
-        	} else if(rc.canPlantTree(Direction.getWest())){
-        		rc.plantTree(Direction.getWest());
+    	if(rc.getRoundNum() > 11){
+        	if(rc.getTeamBullets() >= GameConstants.BULLET_TREE_COST){
+        		if(rc.canPlantTree(Direction.getNorth())){
+            		rc.plantTree(Direction.getNorth());
+            	} else if(rc.canPlantTree(Direction.getSouth())){
+            		rc.plantTree(Direction.getSouth());
+            	} else if(rc.canPlantTree(Direction.getEast())){
+            		rc.plantTree(Direction.getEast());
+            	} else if(rc.canPlantTree(Direction.getWest())){
+            		rc.plantTree(Direction.getWest());
+            	}
         	}
     	}
     	

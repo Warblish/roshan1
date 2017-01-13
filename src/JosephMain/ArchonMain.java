@@ -24,7 +24,7 @@ public strictfp class ArchonMain {
                 //First, hire a gardener to place tree infrastructure then place down a wandering gardener
                 if(rc.canHireGardener(dir) && rc.getRoundNum() == 1){
                 	rc.hireGardener(dir);
-                } else if(rc.canHireGardener(dir) && rc.getRoundNum() == 2){
+                } else if(rc.canHireGardener(dir) && rc.getRoundNum() == 11){
                 	rc.hireGardener(dir);
                 } else if (rc.canHireGardener(dir) && Math.random() < .01) {
                     rc.hireGardener(dir);
