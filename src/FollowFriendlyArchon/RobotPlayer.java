@@ -5,7 +5,6 @@ public strictfp class RobotPlayer {
     static RobotController rc;
 
     //SIMPLE TEST AI TO FOLLOW ARCHON
-    @SuppressWarnings("unused")
     public static void run(RobotController rc) throws GameActionException {
 
         // This is the RobotController object. You use it to perform actions from this robot,
@@ -127,9 +126,6 @@ public strictfp class RobotPlayer {
                 int yPos = rc.readBroadcast(1);
                 MapLocation archonLoc = new MapLocation(xPos,yPos);
                 MapLocation myLocation = rc.getLocation();
-                float myX = myLocation.x;
-                float myY = myLocation.y;
-                Direction dir = new Direction(yPos-myY, xPos-myX);
                 Direction dir2 = new Direction(myLocation, archonLoc);
 
                 // See if there are any nearby enemy robots
@@ -190,11 +186,8 @@ public strictfp class RobotPlayer {
                         int yPos = rc.readBroadcast(1);
                         MapLocation archonLoc = new MapLocation(xPos,yPos);
                         MapLocation myLocation = rc.getLocation();
-                        float myX = myLocation.x;
-                        float myY = myLocation.y;
-                        Direction dir = new Direction(yPos-myY, xPos-myX);
-                        Direction dir2 = new Direction(myLocation, archonLoc);
-                        tryMove(dir2);
+                        Direction dir = new Direction(myLocation, archonLoc);
+                        tryMove(dir);
                     }
                 }
 
@@ -245,7 +238,6 @@ public strictfp class RobotPlayer {
         }
 
         // Now try a bunch of similar angles
-        boolean moved = false;
         int currentCheck = 1;
 
         while(currentCheck<=checksPerSide) {

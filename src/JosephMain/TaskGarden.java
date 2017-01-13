@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public strictfp class TaskGarden extends Task {
-    @SuppressWarnings("unused")
     private Direction[] targets;
     private boolean[] treesAlreadyPlanted;
     private int treeAmt;

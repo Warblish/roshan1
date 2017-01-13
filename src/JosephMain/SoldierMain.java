@@ -4,7 +4,6 @@ import battlecode.common.*;
 public strictfp class SoldierMain {
     static RobotController rc;
     static Task task;
-    @SuppressWarnings("unused")
     public static void run() throws GameActionException {
     	rc = RobotPlayer.rc;
     	task = new TaskKill();

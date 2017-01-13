@@ -6,7 +6,6 @@ import battlecode.common.*;
 //STATIC CLASS TO HANDLE DODGE CODE
 public strictfp class DodgeCore {
     static RobotController rc;
-    @SuppressWarnings("unused")
     public static void tryDodgeTravel(MapLocation target) throws GameActionException { //DODGE BULLETS WHILE TRYING TO GET SOMEWHERE
     	rc = RobotPlayer.rc;
     	BulletInfo[] bullets = rc.senseNearbyBullets();

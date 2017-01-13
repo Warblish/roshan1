@@ -6,7 +6,6 @@ import battlecode.common.*;
 //STATIC CLASS TO HANDLE DODGE CODE
 public strictfp class Movement {
     static RobotController rc;
-    @SuppressWarnings("unused")
     private static boolean chopping = true;
     public static float chopDegreeThreshold = 40;
     public static void setChopping(boolean c) {
@@ -32,7 +31,6 @@ public strictfp class Movement {
             return true;
         }
         // Now try a bunch of similar angles
-        boolean moved = false;
         int currentCheck = 1;
 
         while(currentCheck<=checksPerSide) {
@@ -92,7 +90,6 @@ public strictfp class Movement {
         }*/
 
         // Now try a bunch of similar angles
-        boolean moved = false;
         int currentCheck = 0;
         while(currentCheck<=checksPerSide) {
             // Try the offset of the left side

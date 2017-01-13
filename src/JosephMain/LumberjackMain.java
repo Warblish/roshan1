@@ -5,21 +5,20 @@ public strictfp class LumberjackMain {
     static RobotController rc;
     static Task task1;
     static Task task2;
-    @SuppressWarnings("unused")
     public static void run() throws GameActionException {
     	rc = RobotPlayer.rc;
     	int x = 0;
-		task1 = new TaskAttackOnDemand();
+		task1 = new TaskKillOnDemand();
     	while(true) {
-    		/*if(x != DataMain.archon_locs.length) {
+    		if(x != DataMain.archon_locs.length) {
 	    		eliminateArchon(x);
 	    		x++;
     		} else {
     			Clock.yield();
-    		}*/
+    		}
     		//eliminateArchon(0);
-    		task1.runTurn();
-    		Clock.yield();
+    		//task1.runTurn();
+    		//Clock.yield();
     	}
 	}
     public static void eliminateArchon(int id) {

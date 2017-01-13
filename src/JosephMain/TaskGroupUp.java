@@ -2,7 +2,6 @@ package JosephMain;
 import battlecode.common.*;
 
 public strictfp class TaskGroupUp extends Task {
-    @SuppressWarnings("unused")
     private MapLocation target;
     
     private float threshold = 1; //DISTANCE TO TARGET LOCATION THAT IS ACCEPTABLE

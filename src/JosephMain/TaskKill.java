@@ -2,7 +2,6 @@ package JosephMain;
 import battlecode.common.*;
 
 public strictfp class TaskKill extends Task {
-    @SuppressWarnings("unused")
     private MapLocation target;
     private Team enemy = rc.getTeam().opponent();
     private float threshold = 1;

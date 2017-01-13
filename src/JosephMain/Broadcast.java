@@ -13,7 +13,6 @@ import battlecode.common.*;
 //STATIC CLASS TO HANDLE BROADCASTING
 public strictfp class Broadcast {
     static RobotController rc;
-    @SuppressWarnings("unused")
     //priority will be used later to override less important tasks
     public static boolean broadcastKillRequest(MapLocation m) throws GameActionException {
         RobotPlayer.rc.broadcast(7,1);

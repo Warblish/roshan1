@@ -8,7 +8,6 @@ public strictfp class RobotPlayer {
      * run() is the method that is called when a robot is instantiated in the Battlecode world.
      * If this method returns, the robot dies!
     **/
-    @SuppressWarnings("unused")
     public static void run(RobotController rc) throws GameActionException {
 
         // This is the RobotController object. You use it to perform actions from this robot,
@@ -83,13 +82,7 @@ public strictfp class RobotPlayer {
         while (true) {
 
             // Try/catch blocks stop unhandled exceptions, which cause your robot to explode
-            try {
-
-                // Listen for home archon's location
-                int xPos = rc.readBroadcast(0);
-                int yPos = rc.readBroadcast(1);
-                MapLocation archonLoc = new MapLocation(xPos,yPos);
-                
+            try {   
                 //Check if there is tree nearby (only works for neutral trees right now)
                 TreeInfo[] ti = rc.senseNearbyTrees(2.0f);
                 int treesfound = 0;
@@ -112,9 +105,6 @@ public strictfp class RobotPlayer {
                 }
                 if(treesfound == 0){
                 	//Wander aimlessly if there are no trees in sight
-                    // Generate a random direction
-                    Direction dir = randomDirection();
-
                     // Move randomly
                     tryMove(randomDirection());
                 }
@@ -138,9 +128,7 @@ public strictfp class RobotPlayer {
 
             // Try/catch blocks stop unhandled exceptions, which cause your robot to explode
             try {
-                MapLocation myLocation = rc.getLocation();
-
-                // See if there are any nearby enemy robots
+            	// See if there are any nearby enemy robots
                 RobotInfo[] robots = rc.senseNearbyRobots(-1, enemy);
 
                 // If there are some...
@@ -246,7 +234,6 @@ public strictfp class RobotPlayer {
         }
 
         // Now try a bunch of similar angles
-        boolean moved = false;
         int currentCheck = 1;
 
         while(currentCheck<=checksPerSide) {

@@ -10,7 +10,6 @@ public strictfp class Task {
     private boolean triggered = false;
     private boolean hasTrigger = false;
     private String[] triggers;
-    @SuppressWarnings("unused")
     public void runTurn() throws GameActionException {
     	if(hasTrigger) {
     		triggered = senseTrigger(triggers);
@@ -46,7 +45,6 @@ public strictfp class Task {
     }
     
     public static boolean senseTrigger(String[] t) {  //WARNING, 2 TRIGGERS OF SAME TYPE WILL BREAK TRIGGER ARRAY
-    	RobotController r = RobotPlayer.rc;
     	boolean flag = false;
     	float rad = rc.getType().sensorRadius;
     	Team enemy = rc.getTeam().opponent();

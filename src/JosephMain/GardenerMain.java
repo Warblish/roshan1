@@ -7,7 +7,6 @@ public strictfp class GardenerMain {
     static MapLocation spawnloc = null;
     static Direction init_direction = null;
     static boolean tryToMoveOnStart = true;
-    @SuppressWarnings("unused")
     public static void run() throws GameActionException {
     	rc = RobotPlayer.rc;
     	task = new TaskGarden2();
