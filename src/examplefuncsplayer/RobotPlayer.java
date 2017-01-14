@@ -30,6 +30,7 @@ public strictfp class RobotPlayer {
                 runLumberjack();
                 break;
 			case SCOUT:
+				runScout();
 				break;
 			case TANK:
 				break;
@@ -38,7 +39,20 @@ public strictfp class RobotPlayer {
         }
 	}
 
-    static void runArchon() throws GameActionException {
+    private static void runScout() {
+		System.out.println("I'm a scout!");
+		while(true){
+			try{
+				
+			} catch(Exception e){
+				System.out.println("Scout exception");
+				e.printStackTrace();
+			}
+		}
+		
+	}
+
+	static void runArchon() throws GameActionException {
         System.out.println("I'm an archon!");
 
         // The code you want your robot to perform every round should be in this loop

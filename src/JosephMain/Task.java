@@ -10,16 +10,35 @@ public strictfp class Task {
     private boolean triggered = false;
     private boolean hasTrigger = false;
     private String[] triggers;
+    private final static int MAX_BULLET_COUNT = 1000;
     public void runTurn() throws GameActionException {
     	if(hasTrigger) {
     		triggered = senseTrigger(triggers);
     	}
-    	//Get target amount of bullets if you can win
-    	//Runs for every robot running a task to maximum win speed
-    	if(rc.getTeamBullets() >= (1000-rc.getTeamVictoryPoints())*10){
-        	rc.donate(100);
-        }
+    	victorypointwin();
 	}
+    /*
+     * Use excess bullets to win victory points
+     */
+    public static void victorypointwin(){
+    	
+    	try{
+	    	//Get target amount of bullets if you can win
+	    	//Runs for every robot running a task to maximum win speed
+	    	float bulletamt = rc.getTeamBullets();
+	    	//2010 because 2000 is the threshold and 2010 is the lowest amount possible to donate
+	    	if(bulletamt > MAX_BULLET_COUNT + 10){
+	    		//Donate the nearest ten bullets (as long as it is lower than the current bullet amount)
+	    		//And as long as it keeps the overall bullet amount over 2000
+	    		float difference = bulletamt - MAX_BULLET_COUNT;
+	    		rc.donate((float) (Math.floor(difference/10)*10));
+	    	} else if(rc.getTeamBullets() >= (1000-rc.getTeamVictoryPoints())*10){
+	        	rc.donate(100);
+	        }
+    	} catch(Exception e){
+    		e.printStackTrace();
+    	}
+    }
     public Task() {
     	rc = RobotPlayer.rc;
     }

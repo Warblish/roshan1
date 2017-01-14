@@ -2,13 +2,14 @@ package JosephMain;
 import battlecode.common.*;
 
 public strictfp class TaskGarden2 extends Task {
-    
+	
+	boolean isInDanger = false;
+	
     @Override
     public void runTurn() throws GameActionException {
     	//Wait until the initial gardeners spawn before planting trees
     	if(rc.getRoundNum() > 11){
     		//Only plant trees if it is safe around the gardener
-    		boolean isInDanger = false;
     		RobotInfo[] info = rc.senseNearbyRobots(3, rc.getTeam().opponent());
     		for(int i = 0; i<info.length; i++){
     			if(info[i].getType() == RobotType.LUMBERJACK ||

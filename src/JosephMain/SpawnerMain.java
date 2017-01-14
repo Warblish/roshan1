@@ -20,11 +20,7 @@ public strictfp class SpawnerMain {
                 // Move randomly
                 Movement.tryMove(RobotPlayer.randomDirection());
 
-                //Get target amount of bullets if you can win
-            	//Runs for every robot running a task to maximum win speed
-            	if(rc.getTeamBullets() >= (1000-rc.getTeamVictoryPoints())*10){
-                	rc.donate(100);
-                }
+                Task.victorypointwin();
                 
                 // Clock.yield() makes the robot wait until the next turn, then it will perform this loop again
                 Clock.yield();
