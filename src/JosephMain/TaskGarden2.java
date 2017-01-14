@@ -21,12 +21,16 @@ public strictfp class TaskGarden2 extends Task {
         	if(rc.getTeamBullets() >= GameConstants.BULLET_TREE_COST && !isInDanger){
         		if(rc.canPlantTree(Direction.getNorth())){
             		rc.plantTree(Direction.getNorth());
+            	} else if(rc.canPlantTree(Direction.getNorth().rotateRightDegrees(60))){
+            		rc.plantTree(Direction.getNorth().rotateRightDegrees(60));
+            	} else if(rc.canPlantTree(Direction.getNorth().rotateRightDegrees(120))){
+            		rc.plantTree(Direction.getNorth().rotateRightDegrees(120));
             	} else if(rc.canPlantTree(Direction.getSouth())){
             		rc.plantTree(Direction.getSouth());
-            	} else if(rc.canPlantTree(Direction.getEast())){
-            		rc.plantTree(Direction.getEast());
-            	} else if(rc.canPlantTree(Direction.getWest())){
-            		rc.plantTree(Direction.getWest());
+            	} else if(rc.canPlantTree(Direction.getSouth().rotateRightDegrees(60))){
+            		rc.plantTree(Direction.getSouth().rotateRightDegrees(60));
+            	} else if(rc.canPlantTree(Direction.getSouth().rotateRightDegrees(120))){
+            		rc.plantTree(Direction.getSouth().rotateRightDegrees(120));
             	}
         	}
     	}
