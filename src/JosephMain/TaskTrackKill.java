@@ -25,9 +25,10 @@ public strictfp class TaskTrackKill extends Task {
             MapLocation enemyLocation = robots[0].getLocation();
             Broadcast.broadcastKillRequest(enemyLocation);
         } 
-        if(rc.readBroadcast(7) == 1) {
+        //Check if the most recent broadcast was sent within the last 2 turns
+        if(rc.readBroadcast(7) == 1 && rc.getRoundNum()-rc.readBroadcast(20) <= 2) {
         	System.out.println("killing " + new MapLocation(rc.readBroadcast(8),rc.readBroadcast(9)));
-        	Movement.tryMove(new Direction(rc.getLocation(), new MapLocation(rc.readBroadcast(8),rc.readBroadcast(9))));
+        	Movement.tryMoveSwerve(new Direction(rc.getLocation(), new MapLocation(rc.readBroadcast(8),rc.readBroadcast(9))));
         } else {
             // Move Randomly
             Movement.tryMove(randomDirection());

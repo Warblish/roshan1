@@ -7,7 +7,7 @@ import battlecode.common.*;
 public strictfp class Movement {
     static RobotController rc;
     private static boolean chopping = true;
-    public static float chopDegreeThreshold = 40;
+    public static float chopDegreeThreshold = 100;
     public static void setChopping(boolean c) {
     	chopping = c;
     }

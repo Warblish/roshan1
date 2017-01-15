@@ -8,6 +8,7 @@ import battlecode.common.*;
 //8 -> target x  //we can rework this later to save broadcast space, merge all to single frequency
 //9 -> target y
 //10 -> will broadcast 1 when target eliminated
+//20 -> 
 //21 -> archon will broadcast the hiregardener() order request for type (1 is farmer, 2 is spawner)
 
 //STATIC CLASS TO HANDLE BROADCASTING
@@ -18,6 +19,7 @@ public strictfp class Broadcast {
         RobotPlayer.rc.broadcast(7,1);
         RobotPlayer.rc.broadcast(8,(int)m.x);
         RobotPlayer.rc.broadcast(9,(int)m.y);
+        RobotPlayer.rc.broadcast(20, RobotPlayer.rc.getRoundNum());
         return RobotPlayer.rc.readBroadcast(10) == 1;
     }
 }

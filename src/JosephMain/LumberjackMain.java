@@ -22,7 +22,7 @@ public strictfp class LumberjackMain {
     	}
 	}
     public static void eliminateArchon(int id) throws GameActionException {
-    	if(rc.readBroadcast(7) != 1) {
+    	//if(rc.readBroadcast(7) != 1) {
 	    	task1 = new TaskTravelTo();
 		   	((TaskTravelTo) task1).setThreshold(2);
 		
@@ -43,7 +43,7 @@ public strictfp class LumberjackMain {
 	                e.printStackTrace();
 	            }
 	    	}
-    	}
+    	//}
     	if(rc.readBroadcast(74) == 1) {
         	task2 = new TaskTrackKillArchon();
         	while(!task2.isComplete()){
