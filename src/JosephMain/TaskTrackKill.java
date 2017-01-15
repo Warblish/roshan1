@@ -5,6 +5,8 @@ public strictfp class TaskTrackKill extends Task {
     private Team enemy = rc.getTeam().opponent();
     private boolean archonInRange = false;
     private boolean complete = false;
+    private MapLocation lastenemy;
+    private boolean hasSeenEnemy = false;
     private int buffer = 0;
     @Override
     public void runTurn() throws GameActionException {
@@ -29,9 +31,15 @@ public strictfp class TaskTrackKill extends Task {
         if(rc.readBroadcast(7) == 1 && rc.getRoundNum()-rc.readBroadcast(20) <= 2) {
         	System.out.println("killing " + new MapLocation(rc.readBroadcast(8),rc.readBroadcast(9)));
         	Movement.tryMoveSwerve(new Direction(rc.getLocation(), new MapLocation(rc.readBroadcast(8),rc.readBroadcast(9))));
+        	hasSeenEnemy = true;
+        	lastenemy = new MapLocation(rc.readBroadcast(8),rc.readBroadcast(9));
         } else {
             // Move Randomly
-            Movement.tryMove(randomDirection());
+        	if(hasSeenEnemy) {
+        		Movement.wander(lastenemy);
+        	} else {
+        		Movement.tryMove(randomDirection());
+        	}
         }
     	super.runTurn();
 	}

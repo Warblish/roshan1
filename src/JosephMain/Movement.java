@@ -20,6 +20,10 @@ public strictfp class Movement {
     static Direction randomDirection() {
         return new Direction((float)Math.random() * 2 * (float)Math.PI);
     }
+    static void wander(MapLocation center) throws GameActionException {
+    	Direction dir = new Direction(center, rc.getLocation());
+    	tryMove(dir);
+    }
     static boolean tryMove(Direction dir) throws GameActionException {
         return tryMove(dir,20,3);
     }
@@ -38,24 +42,17 @@ public strictfp class Movement {
         	boolean chopFlag = true;
             if(chopping && currentCheck > 2 && rc.getType() == RobotType.LUMBERJACK && chopFlag) {
             	chopFlag = false; //only do this once per function call
-            	System.out.println("CHOPPED1");
             	TreeInfo[] trees = rc.senseNearbyTrees();
             	System.out.println(trees.length);
             	for(int i = 0; i < trees.length; i++) {
             		TreeInfo tree = trees[i];
-                	System.out.println("CHOPPED2");
             		if(tree.getTeam() != rc.getTeam()) { //not friendly tree
-                    	System.out.println("CHOPPED3");
             			if(Math.abs(dir.degreesBetween(new Direction(rc.getLocation(), tree.getLocation()))) < chopDegreeThreshold) {
             			//if the trees direction is within 40 (or threshold) degrees of our direction
-            				
-                        	System.out.println("CHOPPED4");
             				if(rc.canChop(tree.getLocation())) {
             					rc.chop(tree.getLocation());
             					return true;
             				}
-            			} else {
-                        	System.out.println("CHOPPED5 " + Math.abs(dir.degreesBetween(new Direction(rc.getLocation(), tree.getLocation()))));
             			}
             		}
             	}
@@ -96,24 +93,17 @@ public strictfp class Movement {
         	boolean chopFlag = true;
             if(chopping && currentCheck > 2 && rc.getType() == RobotType.LUMBERJACK && chopFlag) {
             	chopFlag = false; //only do this once per function call
-            	System.out.println("CHOPPED1");
             	TreeInfo[] trees = rc.senseNearbyTrees();
             	System.out.println(trees.length);
             	for(int i = 0; i < trees.length; i++) {
             		TreeInfo tree = trees[i];
-                	System.out.println("CHOPPED2");
             		if(tree.getTeam() != rc.getTeam()) { //not friendly tree
-                    	System.out.println("CHOPPED3");
             			if(Math.abs(dir.degreesBetween(new Direction(rc.getLocation(), tree.getLocation()))) < chopDegreeThreshold) {
             			//if the trees direction is within 40 (or threshold) degrees of our direction
-            				
-                        	System.out.println("CHOPPED4");
             				if(rc.canChop(tree.getLocation())) {
             					rc.chop(tree.getLocation());
             					return true;
             				}
-            			} else {
-                        	System.out.println("CHOPPED5 " + Math.abs(dir.degreesBetween(new Direction(rc.getLocation(), tree.getLocation()))));
             			}
             		}
             	}
@@ -195,24 +185,17 @@ public strictfp class Movement {
         	boolean chopFlag = true;
             if(chopping && currentCheck > 2 && rc.getType() == RobotType.LUMBERJACK && chopFlag) {
             	chopFlag = false; //only do this once per function call
-            	System.out.println("CHOPPED1");
             	TreeInfo[] trees = rc.senseNearbyTrees();
             	System.out.println(trees.length);
             	for(int i = 0; i < trees.length; i++) {
             		TreeInfo tree = trees[i];
-                	System.out.println("CHOPPED2");
             		if(tree.getTeam() != rc.getTeam()) { //not friendly tree
-                    	System.out.println("CHOPPED3");
             			if(Math.abs(dir.degreesBetween(new Direction(rc.getLocation(), tree.getLocation()))) < chopDegreeThreshold) {
             			//if the trees direction is within 40 (or threshold) degrees of our direction
-            				
-                        	System.out.println("CHOPPED4");
             				if(rc.canChop(tree.getLocation())) {
             					rc.chop(tree.getLocation());
             					return true;
             				}
-            			} else {
-                        	System.out.println("CHOPPED5 " + Math.abs(dir.degreesBetween(new Direction(rc.getLocation(), tree.getLocation()))));
             			}
             		}
             	}
