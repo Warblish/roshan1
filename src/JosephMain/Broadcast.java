@@ -8,18 +8,36 @@ import battlecode.common.*;
 //8 -> target x  //we can rework this later to save broadcast space, merge all to single frequency
 //9 -> target y
 //10 -> will broadcast 1 when target eliminated
-//20 -> 
-//21 -> archon will broadcast the hiregardener() order request for type (1 is farmer, 2 is spawner)
+//11 -> archon will broadcast the hiregardener() order request for type (1 is farmer, 2 is spawner)
+//20-22 -> channel for broadcasting kill request for team 1: 20=x, 21=y, 22=round num reference of created command
+//30-32 -> channel for broadcasting kill request for team 1
+//40-42 -> channel for broadcasting kill request for team 1
 
 //STATIC CLASS TO HANDLE BROADCASTING
 public strictfp class Broadcast {
     static RobotController rc;
     //priority will be used later to override less important tasks
-    public static boolean broadcastKillRequest(MapLocation m) throws GameActionException {
-        RobotPlayer.rc.broadcast(7,1);
-        RobotPlayer.rc.broadcast(8,(int)m.x);
-        RobotPlayer.rc.broadcast(9,(int)m.y);
-        RobotPlayer.rc.broadcast(20, RobotPlayer.rc.getRoundNum());
-        return RobotPlayer.rc.readBroadcast(10) == 1;
+    public static void broadcastKillRequest(MapLocation m, int team) throws GameActionException {
+    	//Only allow 3 teams to be created
+    	switch(team){
+    		case 1: 
+    			RobotPlayer.rc.broadcast(20,(int)m.x);
+    	        RobotPlayer.rc.broadcast(21,(int)m.y);
+    	        RobotPlayer.rc.broadcast(22, RobotPlayer.rc.getRoundNum());
+    	        break;
+    		case 2:
+    			RobotPlayer.rc.broadcast(30,(int)m.x);
+    	        RobotPlayer.rc.broadcast(31,(int)m.y);
+    	        RobotPlayer.rc.broadcast(32, RobotPlayer.rc.getRoundNum());
+    	        break;
+    		case 3:
+    			RobotPlayer.rc.broadcast(40,(int)m.x);
+    	        RobotPlayer.rc.broadcast(41,(int)m.y);
+    	        RobotPlayer.rc.broadcast(42, RobotPlayer.rc.getRoundNum());
+    	        break;
+    		default:
+    			System.out.println("Error, wrong team selected in Broadcast: " + team);
+    			break;
+    	}
     }
 }

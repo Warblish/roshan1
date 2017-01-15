@@ -34,7 +34,7 @@ public strictfp class ArchonMain {
                     			dir = RobotPlayer.randomDirection();
                     		}
                 			//Broadcast the farmer request signal to gardeners
-                        	rc.broadcast(21, 1);
+                        	rc.broadcast(11, 1);
             				rc.hireGardener(dir);
                 		} else{
                 			System.out.println("NOT ENOUGH BULLETS TO SPAWN GARDENER (FARMER)");
@@ -56,7 +56,7 @@ public strictfp class ArchonMain {
                     			dir = RobotPlayer.randomDirection();
                     		}
                 			//Broadcast the farmer request signal to gardeners
-                        	rc.broadcast(21, 2);
+                        	rc.broadcast(11, 2);
             				rc.hireGardener(dir);
                 		} else{
                 			System.out.println("NOT ENOUGH BULLETS TO SPAWN GARDENER (FARMER)");
@@ -72,11 +72,11 @@ public strictfp class ArchonMain {
                 			double selector = Math.random();
                     		if(selector <= 0.90d){
                     			//Ask for a farmer and hire one
-                        		rc.broadcast(21, 1);
+                        		rc.broadcast(11, 1);
                         		rc.hireGardener(dir);
                         	} else{
                         		//Ask for a spawner and hire one
-                        		rc.broadcast(21, 2);
+                        		rc.broadcast(11, 2);
                         		rc.hireGardener(dir);
                         	}
             				break;
