@@ -22,25 +22,27 @@ public strictfp class LumberjackMain {
     	}
 	}
     public static void eliminateArchon(int id) throws GameActionException {
-    	task1 = new TaskTravelTo();
-	   	((TaskTravelTo) task1).setThreshold(2);
-	
-    	task1.setTrigger(new String[] {"ENEMYROBOTS"});
-    	while(!task1.isTriggered()){
-    		try {
-            	if(DataMain.archon_locs.length > id){
-                	((TaskTravelTo) task1).setTarget(DataMain.archon_locs[id]);	
-            	}
-            	task1.runTurn();
-            	if(task1.isComplete()){
-            		Clock.yield();
-            		break;
-            	}
-                Clock.yield();
-            } catch (Exception e) {
-                System.out.println("Lumberjack Exception");
-                e.printStackTrace();
-            }
+    	if(rc.readBroadcast(7) != 1) {
+	    	task1 = new TaskTravelTo();
+		   	((TaskTravelTo) task1).setThreshold(2);
+		
+	    	task1.setTrigger(new String[] {"ENEMYROBOTS"});
+	    	while(!task1.isTriggered()){
+	    		try {
+	            	if(DataMain.archon_locs.length > id){
+	                	((TaskTravelTo) task1).setTarget(DataMain.archon_locs[id]);	
+	            	}
+	            	task1.runTurn();
+	            	if(task1.isComplete()){
+	            		Clock.yield();
+	            		break;
+	            	}
+	                Clock.yield();
+	            } catch (Exception e) {
+	                System.out.println("Lumberjack Exception");
+	                e.printStackTrace();
+	            }
+	    	}
     	}
     	if(rc.readBroadcast(74) == 1) {
         	task2 = new TaskTrackKillArchon();
