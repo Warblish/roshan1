@@ -20,7 +20,7 @@ public strictfp class LumberjackMain {
     		//task1.runTurn();
     		//Clock.yield();
     	}
-	}
+	} //fuck u commit
     public static void eliminateArchon(int id) throws GameActionException {
     	if(rc.readBroadcast(7) != 1) {
 	    	task1 = new TaskTravelTo();
