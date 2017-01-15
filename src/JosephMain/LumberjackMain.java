@@ -1,10 +1,14 @@
 package JosephMain;
+import java.util.Random;
+
 import battlecode.common.*;
 
 public strictfp class LumberjackMain {
     static RobotController rc;
     static Task task1;
     static Task task2;
+    static Random rand = new Random();
+	static int squad_number = rand.nextInt(3) + 1;
     public static void run() throws GameActionException {
     	rc = RobotPlayer.rc;
     	int x = 0;
@@ -58,6 +62,7 @@ public strictfp class LumberjackMain {
         	rc.broadcast(74, 1);
     	}
     	task2 = new TaskTrackKill();
+    	((TaskTrackKill)task2).setSquadNumber(squad_number);
     	while(!task2.isComplete()){
     		try{
         		task2.runTurn();

@@ -13,7 +13,7 @@ public strictfp class RobotPlayer {
 	            break;
 	        case GARDENER:
 	        	//A broadcast signal is required on frequency 21 to create a gardener
-	        	int gardenersignal = rc.readBroadcast(21);
+	        	int gardenersignal = rc.readBroadcast(11);
 	        	assert gardenersignal != 0;
 	        	if(gardenersignal == 1){
 	        		//Create farmer
