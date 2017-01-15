@@ -1,0 +1,97 @@
+package JosephMain;
+import battlecode.common.*;
+
+public strictfp class GardenerMain {
+    static RobotController rc;
+    static Task task;
+    static MapLocation spawnloc = null;
+    static Direction init_direction = null;
+    static boolean moveRobot = true;
+    static boolean adjustRobot = true;
+    static float spawnthreshold = 3.0f;
+    
+    public static void run() throws GameActionException {
+    	rc = RobotPlayer.rc;
+    	task = new TaskGarden2();
+    	spawnloc = rc.getLocation();
+    	//Get the nearby Archon
+    	RobotInfo info[] = rc.senseNearbyRobots(1.5f, rc.getTeam());
+    	for(RobotInfo RI : info){
+    		if(RI.getType() == RobotType.ARCHON){
+    			init_direction = new Direction(RI.getLocation(), rc.getLocation());
+    			System.out.println("Gardener located Archon");
+    		}
+    	}
+    	if(init_direction == null){
+    		//one must fulfill before allowing it to be executed fully
+    	}
+    	MapLocation plantation_request = rc.getLocation().add(init_direction, spawnthreshold);
+    	for(int i=0; i<7; i++){
+    		if(!rc.onTheMap(plantation_request, GameConstants.BULLET_TREE_RADIUS*2+GameConstants.GENERAL_SPAWN_OFFSET+rc.getType().bodyRadius)){
+    			init_direction.rotateLeftDegrees(45);
+    			plantation_request = rc.getLocation().add(init_direction, spawnthreshold);
+    			System.out.println(init_direction.radians);
+    		}
+    	}
+        while (true) {
+        	//This is all just super confusing
+    		init_direction = new Direction((float)Math.random() * 2 * (float)Math.PI);
+    	}
+    	
+    	//Create limits on what the initial directi
+        	//Tries to move to predetermined location, then begins to adjust based on its surroundings
+            try {
+            	if(moveRobot){
+            		//Phase 1: move to the predetermined location
+            		if(rc.canMove(init_direction) && rc.getLocation().distanceTo(spawnloc) < spawnthreshold){
+                		Movement.tryMove(init_direction);
+                	} else{
+                		moveRobot = false;
+                	}
+            	} else{
+            		//Phase 2: move to the next location where the area is clear
+            		if(!rc.onTheMap(rc.getLocation(), GameConstants.BULLET_TREE_RADIUS*2+GameConstants.GENERAL_SPAWN_OFFSET+rc.getType().bodyRadius)){
+            			adjustRobot = false;
+            		}
+            		for(int i=0; i<7; i++){
+            			if(!rc.onTheMap(rc.getLocation(), GameConstants.BULLET_TREE_RADIUS*2+GameConstants.GENERAL_SPAWN_OFFSET+rc.getType().bodyRadius)){
+            				init_direction.rotateLeftDegrees(45);
+            				break;
+                		}
+            		}
+            	}
+            	if(rc.canMove(init_direction) && moveRobot){
+            		if(rc.getLocation().distanceTo(spawnloc) < spawnthreshold){
+            			Movement.tryMove(init_direction);
+            		} else{
+            			
+            		}
+            	}
+            	if(rc.canMove(init_direction) && rc.getLocation().distanceTo(spawnloc) < spawnthreshold && moveRobot){
+            		Movement.tryMove(init_direction);
+            	} else{
+            		//Finished moving to predetermined location
+            		if(moveRobot){
+            			for(int i=0; i<7; i++){
+                			if(!rc.onTheMap(rc.getLocation(), GameConstants.BULLET_TREE_RADIUS*2+GameConstants.GENERAL_SPAWN_OFFSET+rc.getType().bodyRadius)){
+                				init_direction.rotateLeftDegrees(45);
+                				break;
+                    		}
+                		}
+            		}
+            		if(adjustRobot){
+            			Movement.tryMove(init_direction);
+            		}
+            		if(!moveRobot){
+	                	task.runTurn();
+	                	moveRobot = false;
+            		}
+            	}
+                Clock.yield();
+            } catch (Exception e) {
+                System.out.println("Soldier Exception");
+                e.printStackTrace();
+            }
+        }
+	}
+}

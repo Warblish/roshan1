@@ -21,18 +21,9 @@ public strictfp class GardenerMain {
     			System.out.println("Gardener located Archon");
     		}
     	}
+    	
     	if(init_direction == null){
     		init_direction = new Direction((float)Math.random() * 2 * (float)Math.PI);
-    	}
-    	
-    	//Create limits on what the initial direction must fulfill before allowing it to be executed fully
-    	MapLocation plantation_request = rc.getLocation().add(init_direction, spawnthreshold);
-    	for(int i=0; i<7; i++){
-    		if(!rc.onTheMap(plantation_request, GameConstants.BULLET_TREE_RADIUS*2+GameConstants.GENERAL_SPAWN_OFFSET+rc.getType().bodyRadius)){
-    			init_direction.rotateLeftDegrees(45);
-    			plantation_request = rc.getLocation().add(init_direction, spawnthreshold);
-    			System.out.println(init_direction.radians);
-    		}
     	}
         while (true) {
             try {
