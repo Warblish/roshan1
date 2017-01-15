@@ -30,8 +30,12 @@ public strictfp class DataMain {
 	    		//And as long as it keeps the overall bullet amount over 2000
 	    		float difference = bulletamt - MAX_BULLET_COUNT;
 	    		RobotPlayer.rc.donate((float) (Math.floor(difference/10)*10));
-	    	} else if(RobotPlayer.rc.getTeamBullets() >= (1000-RobotPlayer.rc.getTeamVictoryPoints())*10){
-	        	RobotPlayer.rc.donate(100);
+	    	} else if(RobotPlayer.rc.getTeamBullets() >= (10000 -(RobotPlayer.rc.getTeamVictoryPoints()*10))){
+	    		if((RobotPlayer.rc.getTeamBullets()/10) < 10) {
+	    			RobotPlayer.rc.donate(10);
+	    		} else {
+	    			RobotPlayer.rc.donate((RobotPlayer.rc.getTeamBullets()/10));
+	    		}
 	        }
     	} catch(Exception e){
     		e.printStackTrace();
