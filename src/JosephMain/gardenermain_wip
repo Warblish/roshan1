@@ -38,7 +38,7 @@ public strictfp class GardenerMain {
     		init_direction = new Direction((float)Math.random() * 2 * (float)Math.PI);
     	}
     	
-    	//Create limits on what the initial directi
+    	//Create limits on what the initial direction
         	//Tries to move to predetermined location, then begins to adjust based on its surroundings
             try {
             	if(moveRobot){
