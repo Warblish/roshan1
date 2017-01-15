@@ -22,6 +22,8 @@ public strictfp class Movement {
     }
     static void wander(MapLocation center) throws GameActionException {
     	Direction dir = new Direction(center, rc.getLocation());
+    	System.out.println("Wandering away from " + center);
+    	System.out.println("Wander direction " + dir);
     	tryMove(dir);
     }
     static boolean tryMove(Direction dir) throws GameActionException {
