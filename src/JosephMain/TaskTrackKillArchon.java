@@ -64,7 +64,12 @@ public strictfp class TaskTrackKillArchon extends Task {
     @Override
     public boolean isComplete() {
     	//Function complete when there was an archon, but now theres not!!!!
-    	return complete;
+    	try {
+			return complete || rc.readBroadcast(74)==1;
+		} catch (GameActionException e) {
+			// TODO Auto-generated catch block
+			return true;
+		}
     }
     
     /**

@@ -21,10 +21,10 @@ public strictfp class LumberjackMain {
     		//Clock.yield();
     	}
 	}
-    public static void eliminateArchon(int id) {
+    public static void eliminateArchon(int id) throws GameActionException {
     	task1 = new TaskTravelTo();
-    	((TaskTravelTo) task1).setThreshold(2);
-
+	   	((TaskTravelTo) task1).setThreshold(2);
+	
     	task1.setTrigger(new String[] {"ENEMYROBOTS"});
     	while(!task1.isTriggered()){
     		try {
@@ -42,8 +42,20 @@ public strictfp class LumberjackMain {
                 e.printStackTrace();
             }
     	}
-    	
-    	task2 = new TaskTrackKillArchon();
+    	if(rc.readBroadcast(74) == 1) {
+        	task2 = new TaskTrackKillArchon();
+        	while(!task2.isComplete()){
+        		try{
+            		task2.runTurn();
+            		Clock.yield();
+        		} catch (Exception e){
+        			System.out.println("Lumberjack exception");
+                    e.printStackTrace();
+        		}
+        	}
+        	rc.broadcast(74, 1);
+    	}
+    	task2 = new TaskTrackKill();
     	while(!task2.isComplete()){
     		try{
         		task2.runTurn();
