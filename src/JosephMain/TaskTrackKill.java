@@ -81,19 +81,6 @@ public strictfp class TaskTrackKill extends Task {
         	} else {
         		Movement.tryMove(randomDirection());
         	}
-        	if(rc.getRoundNum()-rc.readBroadcast(22) <= 2){
-        		System.out.println("killing " + new MapLocation(rc.readBroadcast(20),rc.readBroadcast(21)));
-            	Movement.tryMoveSwerve(new Direction(rc.getLocation(), new MapLocation(20,21)));
-        	} else if(rc.getRoundNum()-rc.readBroadcast(32) <= 2){
-        		System.out.println("killing " + new MapLocation(rc.readBroadcast(30),rc.readBroadcast(31)));
-            	Movement.tryMoveSwerve(new Direction(rc.getLocation(), new MapLocation(20,21)));
-        	} else if(rc.getRoundNum()-rc.readBroadcast(42) <= 2){
-        		System.out.println("killing " + new MapLocation(rc.readBroadcast(40),rc.readBroadcast(41)));
-            	Movement.tryMoveSwerve(new Direction(rc.getLocation(), new MapLocation(20,21)));
-        	} else{
-                // Move Randomly
-                Movement.tryMove(randomDirection());
-        	}
         }
     	super.runTurn();
 	}
