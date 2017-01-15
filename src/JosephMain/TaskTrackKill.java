@@ -13,7 +13,6 @@ public strictfp class TaskTrackKill extends Task {
     private int squad_number;
     @Override
     public void runTurn() throws GameActionException {
-    	System.out.println("Running tack kill");
     	RobotInfo[] robots = rc.senseNearbyRobots(RobotType.LUMBERJACK.bodyRadius+GameConstants.LUMBERJACK_STRIKE_RADIUS, enemy);
 
         if(robots.length > 0 && !rc.hasAttacked()) {
@@ -29,7 +28,6 @@ public strictfp class TaskTrackKill extends Task {
             MapLocation enemyLocation = robots[0].getLocation();
             if(squad_number != 0){
             	Broadcast.broadcastKillRequest(enemyLocation, squad_number);
-            	System.out.println("Squad Number:" + squad_number);
             } else{
             	Broadcast.broadcastKillRequest(enemyLocation, 1);
             }
@@ -51,35 +49,52 @@ public strictfp class TaskTrackKill extends Task {
         		break;
         }
         if(rc.getRoundNum()-rc.readBroadcast(round_to_check) <= 2) {
+        	boolean readBroadcast = false;
         	int x_target = 0;
             int y_target = 0;
             switch(squad_number){
     		case(1): 
     			x_target = rc.readBroadcast(20);
     			y_target = rc.readBroadcast(21);
+    			readBroadcast = true;
     			break;
     		case(2): 
     			x_target = rc.readBroadcast(30);
 				y_target = rc.readBroadcast(31);
+    			readBroadcast = true;
     			break;
     		case(3):
     			x_target = rc.readBroadcast(40);
 				y_target = rc.readBroadcast(41);
+    			readBroadcast = true;
     			break;
     		default:
     			System.out.println("Error: illegal squad number");
     			break;
             }
-        	System.out.println("killing " + new MapLocation(x_target,y_target));
-        	Movement.tryMoveSwerve(new Direction(rc.getLocation(), new MapLocation(x_target,y_target)));
-        	hasSeenEnemy = true;
-        	lastenemy = new MapLocation(rc.readBroadcast(8),rc.readBroadcast(9));
+	        Movement.tryMoveSwerve(new Direction(rc.getLocation(), new MapLocation(x_target,y_target)));
+	        hasSeenEnemy = true;
+	        lastenemy = new MapLocation((x_target),(y_target));
         } else {
+        	if(rc.getRoundNum()-rc.readBroadcast(22) <= 2){
+        		Movement.tryMoveSwerve(new Direction(rc.getLocation(), new MapLocation(rc.readBroadcast(20),rc.readBroadcast(21))));
+        		hasSeenEnemy = true;
+        		lastenemy = new MapLocation(rc.readBroadcast(20),rc.readBroadcast(21));
+        	} else if(rc.getRoundNum()-rc.readBroadcast(32) <= 2){
+        		Movement.tryMoveSwerve(new Direction(rc.getLocation(), new MapLocation(rc.readBroadcast(30),rc.readBroadcast(31))));
+        		hasSeenEnemy = true;
+        		lastenemy = new MapLocation(rc.readBroadcast(30),rc.readBroadcast(31));
+        	} else if(rc.getRoundNum()-rc.readBroadcast(42) <= 2){
+        		Movement.tryMoveSwerve(new Direction(rc.getLocation(), new MapLocation(rc.readBroadcast(40),rc.readBroadcast(41))));
+        		hasSeenEnemy = true;
+        		lastenemy = new MapLocation(rc.readBroadcast(40),rc.readBroadcast(41));
+        	} else{
             // Move Randomly
-        	if(hasSeenEnemy) {
-        		Movement.wander(lastenemy);
-        	} else {
-        		Movement.tryMove(randomDirection());
+	        	if(hasSeenEnemy) {
+	        		Movement.wander(lastenemy);
+	        	} else {
+	        		Movement.tryMove(randomDirection());
+	        	}
         	}
         }
     	super.runTurn();
