@@ -1,4 +1,7 @@
 package ScoutTest;
+import java.util.ArrayList;
+import java.util.Random;
+
 import JosephMain.Movement;
 import battlecode.common.*;
 
@@ -45,8 +48,18 @@ public strictfp class RobotPlayer {
 		Team enemy = rc.getTeam().opponent();
 		float threshold = 1.0f;
 		MapLocation[] archon_locs = rc.getInitialArchonLocations(rc.getTeam().opponent());
-		MapLocation target = archon_locs[0];
+		//Get a random archon to harass constantly throughout the game
+		Random rand = new Random();
+		int archon_to_target;
+		if(archon_locs.length == 1){
+			archon_to_target = 0;
+		} else{
+			archon_to_target = rand.nextInt(archon_locs.length);
+		}
+		MapLocation target = archon_locs[archon_to_target];
 		boolean completed_target = false;
+		//Gets the approximate location of nearby gardeners who are building in formations
+		float farm_size = GameConstants.BULLET_TREE_RADIUS*2+GameConstants.GENERAL_SPAWN_OFFSET+1.0f+0.1f;
 		
 		while(true){
 			try{
@@ -58,8 +71,59 @@ public strictfp class RobotPlayer {
 		        	//Prioritize killing gardeners
 		        	for(int i=0; i<nearbyRobots.length; i++){
 		        		if(nearbyRobots[i].getType() == RobotType.GARDENER){
-		        			tryMove(new Direction(rc.getLocation(), nearbyRobots[i].getLocation()));
-		        			robotattacklocation = nearbyRobots[i].getLocation();
+		        			//Check for trees around the gardener
+		        			TreeInfo[] tree_info = rc.senseNearbyTrees(nearbyRobots[i].getLocation(), farm_size, enemy);
+		        			//Change to an ArrayList for easier handling
+		        			if(tree_info.length > 0){
+		        				//Get the tree that is the nearest
+		        				//Change to an ArrayList for easier handling
+		        				//Filter out trees that are already occupied by scouts
+		        				ArrayList<TreeInfo> trees_list = new ArrayList<TreeInfo>();
+		        				for(TreeInfo info : tree_info){
+		        					if(rc.senseNearbyRobots(info.getLocation(), GameConstants.BULLET_TREE_RADIUS, rc.getTeam()).length == 0){
+		        						trees_list.add(info);
+		        					}
+		        				}
+
+		        				if(trees_list.size() > 0){
+		        					TreeInfo closest_tree = trees_list.get(0);
+			        				for(TreeInfo info : trees_list){
+			        					//Check if the next tree in the array is closer to the scout than the closest one of the previous trees
+			        					if(rc.getLocation().distanceTo(info.getLocation()) < rc.getLocation().distanceTo(closest_tree.getLocation())){
+			        						closest_tree = info;
+			        					}
+			        				}
+			        				System.out.println(closest_tree.location);
+			        				//Move perfectly into the closest tree
+			        				Direction dir_move = rc.getLocation().directionTo(closest_tree.getLocation());
+			        				float distance_to_move = rc.getLocation().distanceTo(closest_tree.getLocation());
+			        				System.out.println(dir_move);
+			        				System.out.println(distance_to_move);
+			        				if(distance_to_move >= 1.0f){
+			        					if(!rc.hasMoved() && rc.canMove(dir_move)){
+			        						tryMove(dir_move);
+			        						robotattacklocation = null;
+			        						Clock.yield();
+			        					}
+			        				} else if(!rc.hasMoved() && rc.canMove(closest_tree.getLocation())){
+			        					tryMove(dir_move);
+			        					robotattacklocation = closest_tree.getLocation();
+			        				} else{
+			        					//The scout is blocked from moving into the tree by an obstruction
+			        					System.out.println("SCOUT IS OBSTRUCTED FROM MOVING INTO TREE");
+			        				}
+		        				} else{
+		        					//Change target already
+		        					System.out.println("TARGET SATURATION");
+		        					Clock.yield();
+		        				}
+		        				
+		        			} else{
+		        				//There are no nearby trees to the gardener
+		        				//Try to move closer and set the gardener to targeted
+		        				tryMove(new Direction(rc.getLocation(), nearbyRobots[i].getLocation()));
+			        			robotattacklocation = nearbyRobots[i].getLocation();
+		        			}
 		        			hasAlreadyChased = true;
 		        			break;
 		        		}
@@ -74,23 +138,25 @@ public strictfp class RobotPlayer {
 			        			break;
 		        			}
 		        		}
-		        	} else{
-		        		if(robotattacklocation != null){
-		           		 // And we have enough bullets, and haven't attacked yet this turn...
-		            		if(rc.getLocation().isWithinDistance(robotattacklocation, 3.0f) && rc.canFireSingleShot()){
-		            			 // ...Then fire a bullet in the direction of the enemy.
-		                        rc.fireSingleShot(rc.getLocation().directionTo(nearbyRobots[0].location));
-		            		}
-		        		}
-		        	}
+		        	} 
+	        		if(robotattacklocation != null){
+	           		 // And we have enough bullets, and haven't attacked yet this turn...
+	            		if(rc.getLocation().isWithinDistance(robotattacklocation, 3.0f) && rc.canFireSingleShot()){
+	            			 // ...Then fire a bullet in the direction of the enemy.
+	                        rc.fireSingleShot(rc.getLocation().directionTo(nearbyRobots[0].location));
+	                        Clock.yield();
+	            		}
+	        		}
 		        } else{
 		        	//No robots detected around the scout
-		        	if(rc.getLocation().distanceTo(target) > threshold){
+		        	if(!rc.hasMoved() && rc.getLocation().distanceTo(target) > threshold){
 		        		tryMove(new Direction(rc.getLocation(), target));
-		    		} else{
+		        		Clock.yield();
+		    		} else if(!rc.hasMoved()){
 		    			//Made it to the intended target location and start to wander
 		    			Direction dir = RobotPlayer.randomDirection();
-		    			rc.move(dir);
+		    			tryMove(dir);
+		    			Clock.yield();
 		    		}
 		        }
 			} catch(Exception e){
@@ -127,6 +193,9 @@ public strictfp class RobotPlayer {
                 	}
                 } else{
                 	if(rc.canHireGardener(dir) && Math.random() < 0.01){
+                		while(!rc.canHireGardener(dir)){
+                			dir = RobotPlayer.randomDirection();
+                		}
                 		rc.hireGardener(dir);
                 	}
                 }
@@ -134,10 +203,6 @@ public strictfp class RobotPlayer {
                 // Move randomly
                 tryMove(RobotPlayer.randomDirection());
 
-                // Broadcast archon's location for other robots on the team to know
-                MapLocation myLocation = rc.getLocation();
-                rc.broadcast(0,(int)myLocation.x);
-                rc.broadcast(1,(int)myLocation.y);
                 //Broadcast.broadcastKillRequest(DataMain.archon_locs[1]);
                 // Clock.yield() makes the robot wait until the next turn, then it will perform this loop again
                 Clock.yield();
@@ -161,9 +226,10 @@ public strictfp class RobotPlayer {
                 Direction dir = randomDirection();
 
                 // Randomly attempt to build a soldier or lumberjack in this direction
-                if (rc.canBuildRobot(RobotType.SCOUT, dir)) {
-                    rc.buildRobot(RobotType.SCOUT, dir);
-                } 
+                rc.buildRobot(RobotType.SCOUT, dir);
+                //if (rc.canBuildRobot(RobotType.SCOUT, dir)) {
+                //    rc.buildRobot(RobotType.SCOUT, dir);
+                //} 
 
                 // Move randomly
                 tryMove(randomDirection());
@@ -273,6 +339,10 @@ public strictfp class RobotPlayer {
     static boolean tryMove(Direction dir) throws GameActionException {
         return tryMove(dir,20,3);
     }
+    
+    static boolean tryMoveAmt(Direction dir, float distance) throws GameActionException {
+        return tryMoveAmt(dir,20,3, distance);
+    }
 
     /**
      * Attempts to move in a given direction, while avoiding small obstacles direction in the path.
@@ -303,6 +373,36 @@ public strictfp class RobotPlayer {
             // Try the offset on the right side
             if(rc.canMove(dir.rotateRightDegrees(degreeOffset*currentCheck))) {
                 rc.move(dir.rotateRightDegrees(degreeOffset*currentCheck));
+                return true;
+            }
+            // No move performed, try slightly further
+            currentCheck++;
+        }
+
+        // A move never happened, so return false.
+        return false;
+    }
+    
+    static boolean tryMoveAmt(Direction dir, float degreeOffset, int checksPerSide, float distance) throws GameActionException {
+
+        // First, try intended direction
+        if (rc.canMove(dir, distance)) {
+            rc.move(dir, distance);
+            return true;
+        }
+
+        // Now try a bunch of similar angles
+        int currentCheck = 1;
+
+        while(currentCheck<=checksPerSide) {
+            // Try the offset of the left side
+            if(rc.canMove(dir.rotateLeftDegrees(degreeOffset*currentCheck))) {
+                rc.move(dir.rotateLeftDegrees(degreeOffset*currentCheck), distance);
+                return true;
+            }
+            // Try the offset on the right side
+            if(rc.canMove(dir.rotateRightDegrees(degreeOffset*currentCheck))) {
+                rc.move(dir.rotateRightDegrees(degreeOffset*currentCheck), distance);
                 return true;
             }
             // No move performed, try slightly further
