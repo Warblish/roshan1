@@ -8,7 +8,7 @@ import battlecode.common.*;
 //8 -> target x  //we can rework this later to save broadcast space, merge all to single frequency
 //9 -> target y
 //10 -> will broadcast 1 when target eliminated
-//11 -> archon will broadcast the hiregardener() order request for type (1 is farmer, 2 is spawner)
+//11 -> archon will broadcast the hiregardener() order request for type (1 is farmer, 2 is spawner, 3 is guard)
 //20-22 -> channel for broadcasting kill request for team 1: 20=x, 21=y, 22=round num reference of created command
 //30-32 -> channel for broadcasting kill request for team 1
 //40-42 -> channel for broadcasting kill request for team 1

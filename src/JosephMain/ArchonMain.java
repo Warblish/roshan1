@@ -43,29 +43,7 @@ public strictfp class ArchonMain {
             		if(rc.getRobotCount()-archon_amt == 0){
             			System.out.println("ARCHON FAILED TO SPAWN FARMER: NO SUITABLE LOCATION");
             			//Try to spawn gardener in 4 random cardinal directions as a last ditch effort
-            		}
-                } else if(rc.getRoundNum() == 11){
-                	//Get the amount of spawners (gardeners) on the field
-                	int archon_amt = 0;
-                	for(MapLocation loc : archon_locs) archon_amt++;
-                	if(rc.getRobotCount() - archon_amt == 1){
-                		//If the amount of total robots - total archons is one, there are no spawners yet so hire a spawner
-                		//Try unlimited times to hire the garden in random directions until the hire is accepted, else randomize direction
-                		if(rc.getTeamBullets() > 100){
-                			while(!rc.canHireGardener(dir)){
-                    			dir = RobotPlayer.randomDirection();
-                    		}
-                			//Broadcast the farmer request signal to gardeners
-                        	rc.broadcast(11, 2);
-            				rc.hireGardener(dir);
-                		} else{
-                			System.out.println("NOT ENOUGH BULLETS TO SPAWN GARDENER (FARMER)");
-                		}
-                	}
-            		if(rc.getRobotCount()-archon_amt == 1){
-            			System.out.println("ARCHON FAILED TO SPAWN FARMER: NO SUITABLE LOCATION");
-            			//Try to spawn gardener in 4 random cardinal directions as a last ditch effort
-            		}
+            		} 
                 } else if (rc.getRoundNum() > 21 && Math.random() < .01) {
                 	for(int i = 0; i<retry_dir_amt; i++){
                 		if(rc.canHireGardener(dir)){

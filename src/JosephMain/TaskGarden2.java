@@ -4,6 +4,7 @@ import battlecode.common.*;
 public strictfp class TaskGarden2 extends Task {
 	
 	boolean isInDanger = false;
+	boolean spawned_guard = false;
 	
     @Override
     public void runTurn() throws GameActionException {
@@ -18,6 +19,21 @@ public strictfp class TaskGarden2 extends Task {
     				isInDanger = true;
     				break;
     			}
+    		}
+    		if(!spawned_guard && rc.getTeamBullets() >= 100.0f){
+    			if(rc.canBuildRobot(RobotType.LUMBERJACK, Direction.getNorth())){
+            		rc.buildRobot(RobotType.LUMBERJACK, Direction.getNorth());
+            	} else if(rc.canBuildRobot(RobotType.LUMBERJACK, Direction.getNorth().rotateRightDegrees(60))){
+            		rc.canBuildRobot(RobotType.LUMBERJACK, Direction.getNorth().rotateRightDegrees(60));
+            	} else if(rc.canBuildRobot(RobotType.LUMBERJACK, Direction.getNorth().rotateRightDegrees(120))){
+            		rc.canBuildRobot(RobotType.LUMBERJACK, Direction.getNorth().rotateRightDegrees(120));
+            	} else if(rc.canBuildRobot(RobotType.LUMBERJACK, Direction.getSouth())){
+            		rc.buildRobot(RobotType.LUMBERJACK, Direction.getSouth());
+            	} else if(rc.canBuildRobot(RobotType.LUMBERJACK, Direction.getSouth().rotateRightDegrees(60))){
+            		rc.canBuildRobot(RobotType.LUMBERJACK, Direction.getSouth().rotateRightDegrees(60));
+            	} else if(rc.canBuildRobot(RobotType.LUMBERJACK, Direction.getNorth().rotateRightDegrees(120))){
+            		rc.canBuildRobot(RobotType.LUMBERJACK, Direction.getNorth().rotateRightDegrees(120));
+            	}
     		}
         	if(rc.getTeamBullets() >= GameConstants.BULLET_TREE_COST && !isInDanger){
         		if(rc.canPlantTree(Direction.getNorth())){
