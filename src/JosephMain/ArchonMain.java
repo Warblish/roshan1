@@ -9,7 +9,7 @@ public strictfp class ArchonMain {
         System.out.println("I'm an archon!");
         final int retry_dir_amt = 50;
     	MapLocation[] archon_locs = rc.getInitialArchonLocations(rc.getTeam());
-    	
+    	MapLocation[] enemy_archon_locs = rc.getInitialArchonLocations(rc.getTeam().opponent());  	
         // The code you want your robot to perform every round should be in this loop
         while (true) {
 
@@ -29,7 +29,7 @@ public strictfp class ArchonMain {
                 	if(rc.getRobotCount() - archon_amt == 0){
                 		//If the amount of total robots - total archons is zero, there are no farmers yet so hire a farmer
                 		//Try unlimited times to hire the garden in random directions until the hire is accepted, else randomize direction
-                		if(rc.getTeamBullets() > 100){
+                		if(rc.getTeamBullets() > 200){
                 			while(!rc.canHireGardener(dir)){
                     			dir = RobotPlayer.randomDirection();
                     		}
@@ -47,22 +47,18 @@ public strictfp class ArchonMain {
                 } else if (rc.getRoundNum() > 21 && Math.random() < .01) {
                 	for(int i = 0; i<retry_dir_amt; i++){
                 		if(rc.canHireGardener(dir)){
-                			double selector = Math.random();
-                    		if(selector <= 0.90d){
-                    			//Ask for a farmer and hire one
-                        		rc.broadcast(11, 1);
-                        		rc.hireGardener(dir);
-                        	} else{
-                        		//Ask for a spawner and hire one
-                        		rc.broadcast(11, 2);
-                        		rc.hireGardener(dir);
-                        	}
-            				break;
+                			rc.broadcast(11, 1);
+                			rc.hireGardener(dir);
             			} else{
             				dir = RobotPlayer.randomDirection();
             			}
                 	}
 
+                }
+                //
+                if(rc.getRoundNum() > 700 && rc.readBroadcast(99) < 5) { //less than 5 lumberjacks have died
+                	System.out.println("ATTTTAAAAACCCCKKKKKKK");
+                	Broadcast.broadcastKillRequest(enemy_archon_locs[0], 1);
                 }
 
                 // Move randomly

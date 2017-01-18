@@ -5,6 +5,8 @@ public strictfp class TaskGarden2 extends Task {
 	
 	boolean isInDanger = false;
 	boolean spawned_guard = false;
+	Direction guard_spawn_direction;
+	int guard_spawn_id;
 	
     @Override
     public void runTurn() throws GameActionException {
@@ -21,34 +23,16 @@ public strictfp class TaskGarden2 extends Task {
     			}
     		}
     		if(!spawned_guard && rc.getTeamBullets() >= 100.0f){
-    			if(rc.canBuildRobot(RobotType.LUMBERJACK, Direction.getNorth())){
-            		rc.buildRobot(RobotType.LUMBERJACK, Direction.getNorth());
-            	} else if(rc.canBuildRobot(RobotType.LUMBERJACK, Direction.getNorth().rotateRightDegrees(60))){
-            		rc.canBuildRobot(RobotType.LUMBERJACK, Direction.getNorth().rotateRightDegrees(60));
-            	} else if(rc.canBuildRobot(RobotType.LUMBERJACK, Direction.getNorth().rotateRightDegrees(120))){
-            		rc.canBuildRobot(RobotType.LUMBERJACK, Direction.getNorth().rotateRightDegrees(120));
-            	} else if(rc.canBuildRobot(RobotType.LUMBERJACK, Direction.getSouth())){
-            		rc.buildRobot(RobotType.LUMBERJACK, Direction.getSouth());
-            	} else if(rc.canBuildRobot(RobotType.LUMBERJACK, Direction.getSouth().rotateRightDegrees(60))){
-            		rc.canBuildRobot(RobotType.LUMBERJACK, Direction.getSouth().rotateRightDegrees(60));
-            	} else if(rc.canBuildRobot(RobotType.LUMBERJACK, Direction.getNorth().rotateRightDegrees(120))){
-            		rc.canBuildRobot(RobotType.LUMBERJACK, Direction.getNorth().rotateRightDegrees(120));
-            	}
+    			if(rc.canBuildRobot(RobotType.LUMBERJACK, guard_spawn_direction)){
+    				rc.buildRobot(RobotType.LUMBERJACK, guard_spawn_direction);
+    			}
     		}
         	if(rc.getTeamBullets() >= GameConstants.BULLET_TREE_COST && !isInDanger){
-        		if(rc.canPlantTree(Direction.getNorth())){
-            		rc.plantTree(Direction.getNorth());
-            	} else if(rc.canPlantTree(Direction.getNorth().rotateRightDegrees(60))){
-            		rc.plantTree(Direction.getNorth().rotateRightDegrees(60));
-            	} else if(rc.canPlantTree(Direction.getNorth().rotateRightDegrees(120))){
-            		rc.plantTree(Direction.getNorth().rotateRightDegrees(120));
-            	} else if(rc.canPlantTree(Direction.getSouth())){
-            		rc.plantTree(Direction.getSouth());
-            	} else if(rc.canPlantTree(Direction.getSouth().rotateRightDegrees(60))){
-            		rc.plantTree(Direction.getSouth().rotateRightDegrees(60));
-            	} else if(rc.canPlantTree(Direction.getSouth().rotateRightDegrees(120))){
-            		rc.plantTree(Direction.getSouth().rotateRightDegrees(120));
-            	}
+        		for(int id = 0; id < 6 ; id++) {
+        			if(rc.canPlantTree(getDirectionById(id))&& id != guard_spawn_id) {
+        				rc.plantTree(getDirectionById(id));
+        			}
+        		}
         	}
     	}
     	
@@ -80,6 +64,35 @@ public strictfp class TaskGarden2 extends Task {
     
     public TaskGarden2() {
     	super();
+    	//Choose the direction closest to the direction towards the enemy archon location as the guard spawn direction
+    	MapLocation[] archon_info = rc.getInitialArchonLocations(rc.getTeam().opponent());
+    	MapLocation archon = archon_info[0];
+    	Direction d = rc.getLocation().directionTo(archon);
+    	Direction closest = Direction.getNorth();
+    	int id = 0;
+    	//Get the nearest 60 degree angle to direction "d"
+    	System.out.println(d + " distance to archon");
+    	for(int i=0; i<6; i++){
+    		if(Math.abs(d.degreesBetween(closest)) > Math.abs(d.degreesBetween(getDirectionById(i)))){
+    			closest = getDirectionById(i);
+    			id = i;
+    		}
+    	}
+    	guard_spawn_direction = closest;
+    	guard_spawn_id = id;
+    }
+    
+    private Direction getDirectionById(int id){
+    	if(id == 0) return Direction.getNorth();
+    	else if(id==1) return Direction.getNorth().rotateRightDegrees(60);
+    	else if(id==2) return Direction.getNorth().rotateRightDegrees(120);
+    	else if(id==3) return Direction.getSouth();
+    	else if(id==4) return Direction.getSouth().rotateRightDegrees(60);
+    	else if(id==5) return Direction.getSouth().rotateRightDegrees(120);
+    	else{
+    		System.out.println("OH NOOOO");
+    		return Direction.getNorth();
+    	}
     }
     
     @Override

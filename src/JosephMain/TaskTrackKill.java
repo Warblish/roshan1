@@ -90,11 +90,11 @@ public strictfp class TaskTrackKill extends Task {
         		lastenemy = new MapLocation(rc.readBroadcast(40),rc.readBroadcast(41));
         	} else{
             // Move Randomly
-	        	if(hasSeenEnemy) {
-	        		Movement.wander(lastenemy);
-	        	} else {
+	        	//if(hasSeenEnemy) {
+	        	//	Movement.wander(lastenemy);
+	        	//} else {
 	        		Movement.tryMove(randomDirection());
-	        	}
+	        	//}
         	}
         }
     	super.runTurn();

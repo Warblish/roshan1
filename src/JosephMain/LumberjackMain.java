@@ -9,6 +9,7 @@ public strictfp class LumberjackMain {
     static Task task2;
     static Random rand = new Random();
 	static int squad_number = rand.nextInt(3) + 1;
+	static boolean killflag = true;
     public static void run() throws GameActionException {
     	rc = RobotPlayer.rc;
     	int x = 0;
@@ -27,7 +28,7 @@ public strictfp class LumberjackMain {
 	}
     public static void eliminateArchon(int id) throws GameActionException {
     	//if(rc.readBroadcast(7) != 1) {
-	    	task1 = new TaskTravelTo();
+	    	/*task1 = new TaskTravelTo();
 		   	((TaskTravelTo) task1).setThreshold(2);
 		
 	    	task1.setTrigger(new String[] {"ENEMYROBOTS"});
@@ -46,9 +47,9 @@ public strictfp class LumberjackMain {
 	                System.out.println("Lumberjack Exception");
 	                e.printStackTrace();
 	            }
-	    	}
+	    	}*/
     	//}
-    	if(rc.readBroadcast(74) == 1) {
+    	/*if(rc.readBroadcast(74) == 1) {
         	task2 = new TaskTrackKillArchon();
         	while(!task2.isComplete()){
         		try{
@@ -60,11 +61,15 @@ public strictfp class LumberjackMain {
         		}
         	}
         	rc.broadcast(74, 1);
-    	}
+    	}*/
     	task2 = new TaskTrackKill();
     	((TaskTrackKill)task2).setSquadNumber(squad_number);
     	while(!task2.isComplete()){
     		try{
+    			if(rc.getHealth() <= 5 && killflag) {
+    				killflag = false;
+    				rc.broadcast(99, rc.readBroadcast(99)+1);
+    			}
         		task2.runTurn();
         		Clock.yield();
     		} catch (Exception e){
