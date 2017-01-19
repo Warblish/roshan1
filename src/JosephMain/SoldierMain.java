@@ -8,7 +8,7 @@ public strictfp class SoldierMain {
     static Task task1;
     static Task task2;
     static Random rand = new Random();
-	//static int squad_number = rand.nextInt(3) + 1;
+	//static int squad_number = rand.nextInt(2) + 2; //either 2 or 3
     static int squad_number = 3; //for testing, team 3 is soldier only
 	static boolean killflag = true;
     public static void run() throws GameActionException {

@@ -28,11 +28,11 @@ public strictfp class TaskGarden2 extends Task {
     		if(!spawned_guard && rc.getTeamBullets() >= 100.0f){    		    
     			int random = rand.nextInt(3) + 1;
     			//for now random with 2:1 LJ to soldier ratio
-    			if(random != 3) { //1 and 2
+    			if(random != 2) { //33%
 	    			if(rc.canBuildRobot(RobotType.LUMBERJACK, guard_spawn_direction)){
 	    				rc.buildRobot(RobotType.LUMBERJACK, guard_spawn_direction);
 	    			}
-    			} else { //3
+    			} else { //166%
 	    			if(rc.canBuildRobot(RobotType.SOLDIER, guard_spawn_direction)){
 	    				rc.buildRobot(RobotType.SOLDIER, guard_spawn_direction);
 	    			}    				

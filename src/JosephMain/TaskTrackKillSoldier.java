@@ -27,7 +27,11 @@ public strictfp class TaskTrackKillSoldier extends Task {
         		}
         	}
         	if(!willFriendlyFire) {
-        		shootSingle(dir);
+        		if(rc.getLocation().distanceTo(robots[i].getLocation()) < 1) {
+        			shootPentad(dir);
+        		} else {
+        			shootSingle(dir);
+        		}
         		break;
         	}
         }

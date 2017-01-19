@@ -34,7 +34,7 @@ public strictfp class DataMain {
 	    		if((RobotPlayer.rc.getTeamBullets()/10) < 10) {
 	    			RobotPlayer.rc.donate(10);
 	    		} else {
-	    			RobotPlayer.rc.donate((RobotPlayer.rc.getTeamBullets()/10));
+	    			RobotPlayer.rc.donate((RobotPlayer.rc.getTeamBullets()));
 	    		}
 	        }
     	} catch(Exception e){
