@@ -56,8 +56,8 @@ public strictfp class ArchonMain {
 
                 }
                 //
-                if(rc.getRoundNum() > 700 && rc.readBroadcast(99) < 5) { //less than 5 lumberjacks have died
-                	System.out.println("ATTTTAAAAACCCCKKKKKKK");
+                if(rc.getRoundNum() > 700 && (rc.readBroadcast(91)+rc.readBroadcast(92)+rc.readBroadcast(93)) < 5) { //less than 5 lumberjacks have died
+                	System.out.println("ATTTTAAAAACCCCKKKKKKK " + (rc.readBroadcast(91)+rc.readBroadcast(92)+rc.readBroadcast(93)) + "have died");
                 	Broadcast.broadcastKillRequest(enemy_archon_locs[0], 1);
                 }
 

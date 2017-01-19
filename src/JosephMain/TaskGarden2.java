@@ -1,4 +1,6 @@
 package JosephMain;
+import java.util.Random;
+
 import battlecode.common.*;
 
 public strictfp class TaskGarden2 extends Task {
@@ -23,8 +25,17 @@ public strictfp class TaskGarden2 extends Task {
     			}
     		}
     		if(!spawned_guard && rc.getTeamBullets() >= 100.0f){
-    			if(rc.canBuildRobot(RobotType.LUMBERJACK, guard_spawn_direction)){
-    				rc.buildRobot(RobotType.LUMBERJACK, guard_spawn_direction);
+    		    Random rand = new Random();
+    			int random = rand.nextInt(3) + 1;
+    			//for now random with 2:1 LJ to soldier ratio
+    			if(random != 3) { //1 and 2
+	    			if(rc.canBuildRobot(RobotType.LUMBERJACK, guard_spawn_direction)){
+	    				rc.buildRobot(RobotType.LUMBERJACK, guard_spawn_direction);
+	    			}
+    			} else { //3
+	    			if(rc.canBuildRobot(RobotType.SOLDIER, guard_spawn_direction)){
+	    				rc.buildRobot(RobotType.SOLDIER, guard_spawn_direction);
+	    			}    				
     			}
     		}
         	if(rc.getTeamBullets() >= GameConstants.BULLET_TREE_COST && !isInDanger){

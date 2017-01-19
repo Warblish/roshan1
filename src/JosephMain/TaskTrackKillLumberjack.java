@@ -3,7 +3,7 @@ import java.util.Random;
 
 import battlecode.common.*;
 
-public strictfp class TaskTrackKill extends Task {
+public strictfp class TaskTrackKillLumberjack extends Task {
     private Team enemy = rc.getTeam().opponent();
     private boolean archonInRange = false;
     private boolean complete = false;
@@ -11,6 +11,7 @@ public strictfp class TaskTrackKill extends Task {
     private boolean hasSeenEnemy = false;
     private int buffer = 0;
     private int squad_number;
+    public boolean teamSoloAttack = true;
     @Override
     public void runTurn() throws GameActionException {
     	RobotInfo[] robots = rc.senseNearbyRobots(RobotType.LUMBERJACK.bodyRadius+GameConstants.LUMBERJACK_STRIKE_RADIUS, enemy);
@@ -76,31 +77,45 @@ public strictfp class TaskTrackKill extends Task {
 	        hasSeenEnemy = true;
 	        lastenemy = new MapLocation((x_target),(y_target));
         } else {
-        	if(rc.getRoundNum()-rc.readBroadcast(22) <= 2){
-        		Movement.tryMoveSwerve(new Direction(rc.getLocation(), new MapLocation(rc.readBroadcast(20),rc.readBroadcast(21))));
-        		hasSeenEnemy = true;
-        		lastenemy = new MapLocation(rc.readBroadcast(20),rc.readBroadcast(21));
-        	} else if(rc.getRoundNum()-rc.readBroadcast(32) <= 2){
-        		Movement.tryMoveSwerve(new Direction(rc.getLocation(), new MapLocation(rc.readBroadcast(30),rc.readBroadcast(31))));
-        		hasSeenEnemy = true;
-        		lastenemy = new MapLocation(rc.readBroadcast(30),rc.readBroadcast(31));
-        	} else if(rc.getRoundNum()-rc.readBroadcast(42) <= 2){
-        		Movement.tryMoveSwerve(new Direction(rc.getLocation(), new MapLocation(rc.readBroadcast(40),rc.readBroadcast(41))));
-        		hasSeenEnemy = true;
-        		lastenemy = new MapLocation(rc.readBroadcast(40),rc.readBroadcast(41));
-        	} else{
+        	if(!teamSoloAttack) {
+	        	if(rc.getRoundNum()-rc.readBroadcast(22) <= 2){
+	        		Movement.tryMoveSwerve(new Direction(rc.getLocation(), new MapLocation(rc.readBroadcast(20),rc.readBroadcast(21))));
+	        		hasSeenEnemy = true;
+	        		lastenemy = new MapLocation(rc.readBroadcast(20),rc.readBroadcast(21));
+	        	} else if(rc.getRoundNum()-rc.readBroadcast(32) <= 2){
+	        		Movement.tryMoveSwerve(new Direction(rc.getLocation(), new MapLocation(rc.readBroadcast(30),rc.readBroadcast(31))));
+	        		hasSeenEnemy = true;
+	        		lastenemy = new MapLocation(rc.readBroadcast(30),rc.readBroadcast(31));
+	        	} else if(rc.getRoundNum()-rc.readBroadcast(42) <= 2){
+	        		Movement.tryMoveSwerve(new Direction(rc.getLocation(), new MapLocation(rc.readBroadcast(40),rc.readBroadcast(41))));
+	        		hasSeenEnemy = true;
+	        		lastenemy = new MapLocation(rc.readBroadcast(40),rc.readBroadcast(41));
+	        	} else{
+        		
+        		
             // Move Randomly
 	        	//if(hasSeenEnemy) {
 	        	//	Movement.wander(lastenemy);
 	        	//} else {
 	        		Movement.tryMove(randomDirection());
 	        	//}
-        	}
+	        		
+	        		
+	        	}
+        	} else {
+        		
+                // Move Randomly
+    	        	//if(hasSeenEnemy) {
+    	        	//	Movement.wander(lastenemy);
+    	        	//} else {
+    	        		Movement.tryMove(randomDirection());
+    	        	//}
+        	}       	
         }
     	super.runTurn();
 	}
     
-    public TaskTrackKill() {
+    public TaskTrackKillLumberjack() {
     	super();
     }
     public void setSquadNumber(int n){

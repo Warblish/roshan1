@@ -12,6 +12,8 @@ import battlecode.common.*;
 //20-22 -> channel for broadcasting kill request for team 1: 20=x, 21=y, 22=round num reference of created command
 //30-32 -> channel for broadcasting kill request for team 1
 //40-42 -> channel for broadcasting kill request for team 1
+//81, 82, 83 -> channel for help, higher value = high value defense mission
+//91, 92, 93 -> channel for amount of deaths per team
 
 //STATIC CLASS TO HANDLE BROADCASTING
 public strictfp class Broadcast {
@@ -39,5 +41,8 @@ public strictfp class Broadcast {
     			System.out.println("Error, wrong team selected in Broadcast: " + team);
     			break;
     	}
+    }
+    public static void callForHelp(MapLocation s, int priority) {
+    	
     }
 }
