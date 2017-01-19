@@ -7,6 +7,7 @@ public strictfp class TaskGarden2 extends Task {
 	
 	boolean isInDanger = false;
 	boolean spawned_guard = false;
+	int rotationFactor = 0;
 	Direction guard_spawn_direction;
 	Random rand = new Random();
 	int guard_spawn_id;
@@ -80,7 +81,13 @@ public strictfp class TaskGarden2 extends Task {
     	super();
     	//Choose the direction closest to the direction towards the enemy archon location as the guard spawn direction
     	MapLocation[] archon_info = rc.getInitialArchonLocations(rc.getTeam().opponent());
-    	MapLocation archon = archon_info[0];
+    	int aid = 0;
+    	for(int j = 0; j < archon_info.length; j++) {
+    		if(rc.getLocation().distanceTo(archon_info[j]) < rc.getLocation().distanceTo(archon_info[aid])) {
+    			aid = j;
+    		}
+    	}
+    	MapLocation archon = archon_info[aid];
     	Direction d = rc.getLocation().directionTo(archon);
     	Direction closest = Direction.getNorth();
     	int id = 0;
@@ -92,17 +99,18 @@ public strictfp class TaskGarden2 extends Task {
     			id = i;
     		}
     	}
-    	guard_spawn_direction = closest;
+    	rotationFactor = (int) d.degreesBetween(closest);
+    	guard_spawn_direction = closest.rotateRightDegrees(rotationFactor);
     	guard_spawn_id = id;
     }
     
     private Direction getDirectionById(int id){
-    	if(id == 0) return Direction.getNorth();
-    	else if(id==1) return Direction.getNorth().rotateRightDegrees(60);
-    	else if(id==2) return Direction.getNorth().rotateRightDegrees(120);
-    	else if(id==3) return Direction.getSouth();
-    	else if(id==4) return Direction.getSouth().rotateRightDegrees(60);
-    	else if(id==5) return Direction.getSouth().rotateRightDegrees(120);
+    	if(id == 0) return Direction.getNorth().rotateRightDegrees(rotationFactor);
+    	else if(id==1) return Direction.getNorth().rotateRightDegrees(60+rotationFactor);
+    	else if(id==2) return Direction.getNorth().rotateRightDegrees(120+rotationFactor);
+    	else if(id==3) return Direction.getSouth().rotateRightDegrees(rotationFactor);
+    	else if(id==4) return Direction.getSouth().rotateRightDegrees(60+rotationFactor);
+    	else if(id==5) return Direction.getSouth().rotateRightDegrees(120+rotationFactor);
     	else{
     		System.out.println("OH NOOOO");
     		return Direction.getNorth();
