@@ -46,8 +46,7 @@ public strictfp class RobotPlayer {
     private static void runScout() {
 		System.out.println("I'm a scout!");
 		Team enemy = rc.getTeam().opponent();
-		float threshold = 1.0f;
-		MapLocation[] archon_locs = rc.getInitialArchonLocations(rc.getTeam().opponent());
+		MapLocation[] archon_locs = rc.getInitialArchonLocations(enemy);
 		//Get a random archon to harass constantly throughout the game
 		Random rand = new Random();
 		int archon_to_target;
@@ -64,7 +63,29 @@ public strictfp class RobotPlayer {
 		while(true){
 			try{
 				
-				RobotInfo[] nearbyRobots = rc.senseNearbyRobots(-1, rc.getTeam().opponent());
+				//Neutral tree search and shake
+				TreeInfo[] neutral_trees = rc.senseNearbyTrees(-1, rc.getTeam().NEUTRAL);
+				for(TreeInfo neutral_tree : neutral_trees){
+					if(rc.canShake() && neutral_tree.containedBullets > 0){
+						//Allow to scout to make its way to this location
+						//Try to automatically shake if the neutral tree is within the scout stride radius
+						//Else try to first move towards the tree then shake it
+						if(rc.getLocation().distanceTo(neutral_tree.getLocation()) < 2.0f){
+							rc.shake(neutral_tree.ID);
+						} else{
+							if(rc.canMove(neutral_tree.getLocation())){
+								rc.move(neutral_tree.getLocation());
+								if(rc.getLocation().distanceTo(neutral_tree.getLocation()) < 2.0f){
+									rc.shake(neutral_tree.ID);
+								}
+							}
+						}
+						break;
+					}
+				}
+				
+				//Code for assassinating gardeners
+				RobotInfo[] nearbyRobots = rc.senseNearbyRobots(-1, enemy);
 				ArrayList<RobotInfo> nearbyRobotsList = new ArrayList<RobotInfo>();
 				for(RobotInfo rob : nearbyRobots){
 					nearbyRobotsList.add(rob);
@@ -87,7 +108,7 @@ public strictfp class RobotPlayer {
 						if(rc.getLocation().distanceTo(target_robot.getLocation()) < 4.0f){
 							//Travel closer to the target
 							//Find trees around that target gardener
-							TreeInfo[] tree_targets = rc.senseNearbyTrees(target_robot.getLocation(), farm_size, rc.getTeam().opponent());
+							TreeInfo[] tree_targets = rc.senseNearbyTrees(target_robot.getLocation(), farm_size, enemy);
 							if(tree_targets.length > 0){
 								//There are trees to hide in! lets do it
 								if(rc.canMove(tree_targets[0].getLocation())){
