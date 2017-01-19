@@ -12,7 +12,7 @@ import battlecode.common.*;
 //20-22 -> channel for broadcasting kill request for team 1: 20=x, 21=y, 22=round num reference of created command
 //30-32 -> channel for broadcasting kill request for team 1
 //40-42 -> channel for broadcasting kill request for team 1
-//81, 82, 83 will be used for job type/priority in the future
+//81, 82, 83 -> channel for help, higher value = high value defense mission
 //91, 92, 93 -> channel for amount of deaths per team
 
 //STATIC CLASS TO HANDLE BROADCASTING
@@ -42,18 +42,7 @@ public strictfp class Broadcast {
     			break;
     	}
     }
-    private static int expirationThreshold = 2; //amount of turns passed for a job to expire
-    public static boolean hasJob(int team) throws GameActionException {
-    	return Math.abs(RobotPlayer.rc.readBroadcast(team*10+12)-RobotPlayer.rc.getRoundNum()) >= expirationThreshold;
-    }
-    public static void callForHelp(RobotInfo threat) throws GameActionException {
-    	MapLocation threatLoc = threat.getLocation();
-    	if(!hasJob(1)) {
-    		broadcastKillRequest(threatLoc, 1);
-    	} else if(!hasJob(2)) {
-    		broadcastKillRequest(threatLoc, 2);
-    	} else if(!hasJob(3)) {
-    		broadcastKillRequest(threatLoc, 3);
-    	}
+    public static void callForHelp(MapLocation s, int priority) {
+    	
     }
 }

@@ -1,4 +1,4 @@
-package ScoutTest;
+package SuperGreed;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -44,79 +44,8 @@ public strictfp class RobotPlayer {
 	}
     
     private static void runScout() {
-		System.out.println("I'm a scout!");
-		Team enemy = rc.getTeam().opponent();
-		float threshold = 1.0f;
-		MapLocation[] archon_locs = rc.getInitialArchonLocations(rc.getTeam().opponent());
-		//Get a random archon to harass constantly throughout the game
-		Random rand = new Random();
-		int archon_to_target;
-		if(archon_locs.length == 1){
-			archon_to_target = 0;
-		} else{
-			archon_to_target = rand.nextInt(archon_locs.length);
-		}
-		RobotInfo target_robot = null;
-		MapLocation target = archon_locs[archon_to_target];
-		//Gets the approximate location of nearby gardeners who are building in formations
-		float farm_size = GameConstants.BULLET_TREE_RADIUS*2+GameConstants.GENERAL_SPAWN_OFFSET+1.0f+0.1f;
-		
+
 		while(true){
-			try{
-				
-				RobotInfo[] nearbyRobots = rc.senseNearbyRobots(-1, rc.getTeam().opponent());
-				ArrayList<RobotInfo> nearbyRobotsList = new ArrayList<RobotInfo>();
-				for(RobotInfo rob : nearbyRobots){
-					nearbyRobotsList.add(rob);
-				}
-				if(nearbyRobots.length > 0){
-					//There are enemy robots nearby
-					if(target_robot == null || !nearbyRobotsList.contains(target_robot)){
-						//No robot is currently being targeted, so choose a new target
-						for(RobotInfo rob : nearbyRobotsList){
-							if(rob.getType() == RobotType.GARDENER){
-								target_robot = rob;
-								break;
-							}
-						}
-					}
-					//Now proceed to find the target and kill it, or if there is no target, then wander around
-					if(target_robot != null){
-						//If a target robot has already been selected
-						//Find trees around that target gardener
-						if(rc.getLocation().distanceTo(target_robot.getLocation()) > 4.0f){
-							//Travel closer to the target
-							//Find trees around that target gardener
-							TreeInfo[] tree_targets = rc.senseNearbyTrees(target_robot.getLocation(), farm_size, rc.getTeam().opponent());
-							if(tree_targets.length > 0){
-								//There are trees to hide in! lets do it
-								if(rc.canMove(tree_targets[0].getLocation())){
-									rc.move(tree_targets[0].getLocation());
-								}
-								rc.fireSingleShot(rc.getLocation().directionTo(tree_targets[0].getLocation()));
-							} else{
-								tryMove(rc.getLocation().directionTo(target_robot.getLocation()));
-								rc.fireSingleShot(rc.getLocation().directionTo(target_robot.getLocation()));;
-								//No trees to be seen! Just attack the gardener
-							}
-						}
-					} else{
-						Direction dir = RobotPlayer.randomDirection();
-						if(rc.canMove(dir)){
-							rc.move(dir);
-						}
-					}
-				} else{
-					//There are no enemy robots nearby
-					Direction dir = rc.getLocation().directionTo(target);
-					tryMove(dir);
-				}
-				
-		        Clock.yield();
-			} catch(Exception e){
-				System.out.println("Scout exception");
-				e.printStackTrace();
-			}
 		}
 		
 	}
@@ -177,15 +106,29 @@ public strictfp class RobotPlayer {
             // Try/catch blocks stop unhandled exceptions, which cause your robot to explode
             try {
                 // Generate a random direction
-                Direction dir = randomDirection();
 
-                // Randomly attempt to build a soldier or lumberjack in this direction
-                if (rc.canBuildRobot(RobotType.SCOUT, dir)) {
-                    rc.buildRobot(RobotType.SCOUT, dir);
-                } 
-
-                // Move randomly
-                tryMove(randomDirection());
+                if(rc.getTeamBullets() >= GameConstants.BULLET_TREE_COST){
+            		for(int id = 0; id < 6 ; id++) {
+            			if(rc.canPlantTree(getDirectionById(id))) {
+            				rc.plantTree(getDirectionById(id));
+            			}
+            		}
+            	}
+                
+                if(rc.senseNearbyTrees(1.0f, rc.getTeam()).length > 0){
+                	tryMove(randomDirection());
+                }
+                
+                //Code to water the surrounding tree in plus formation with the lowest health, ensures max health at all times
+            	if(rc.canWater()){
+            		TreeInfo[] info_set = rc.senseNearbyTrees(1.2f, rc.getTeam());
+            		if(info_set.length > 0){
+            			int lowest_health_id = getMinValueOfTreeIDLowestHealth(info_set);
+                		if(rc.canWater(lowest_health_id)){
+                			rc.water(lowest_health_id);
+                		}
+            		}
+            	}
 
                 // Clock.yield() makes the robot wait until the next turn, then it will perform this loop again
                 Clock.yield();
@@ -195,6 +138,29 @@ public strictfp class RobotPlayer {
                 e.printStackTrace();
             }
         }
+    }
+	
+	private static int getMinValueOfTreeIDLowestHealth(TreeInfo[] info_set) {
+        TreeInfo minValue = info_set[0];
+        for (int i = 1; i < info_set.length; i++) {
+            if (info_set[i].health < minValue.health) {
+                minValue = info_set[i];
+            }
+        }
+        return minValue.ID;
+    }
+	
+	private static Direction getDirectionById(int id){
+    	if(id == 0) return Direction.getNorth();
+    	else if(id==1) return Direction.getNorth().rotateRightDegrees(60);
+    	else if(id==2) return Direction.getNorth().rotateRightDegrees(120);
+    	else if(id==3) return Direction.getSouth();
+    	else if(id==4) return Direction.getSouth().rotateRightDegrees(60);
+    	else if(id==5) return Direction.getSouth().rotateRightDegrees(120);
+    	else{
+    		System.out.println("OH NOOOO");
+    		return Direction.getNorth();
+    	}
     }
 
     static void runSoldier() throws GameActionException {

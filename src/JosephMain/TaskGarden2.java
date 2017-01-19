@@ -14,16 +14,13 @@ public strictfp class TaskGarden2 extends Task {
     @Override
     public void runTurn() throws GameActionException {
     	//Wait until the initial gardeners spawn before planting trees
-    	isInDanger = false;
     	if(rc.getRoundNum() > 11){
     		//Only plant trees if it is safe around the gardener
     		RobotInfo[] info = rc.senseNearbyRobots(3, rc.getTeam().opponent());
     		for(int i = 0; i<info.length; i++){
     			if(info[i].getType() == RobotType.LUMBERJACK ||
     					info[i].getType() == RobotType.SOLDIER ||
-    					info[i].getType() == RobotType.TANK ||
-    					info[i].getType() == RobotType.SCOUT){
-    				Broadcast.callForHelp(info[i]);
+    					info[i].getType() == RobotType.TANK){
     				isInDanger = true;
     				break;
     			}

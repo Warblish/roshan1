@@ -35,6 +35,7 @@ public strictfp class RobotPlayer {
 				ScoutMain.run();
 				break;
 			case TANK:
+				SoldierMain.run();
 				break;
 			default:
 				break;
