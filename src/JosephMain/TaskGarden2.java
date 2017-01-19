@@ -13,6 +13,7 @@ public strictfp class TaskGarden2 extends Task {
 	
     @Override
     public void runTurn() throws GameActionException {
+    	isInDanger = false;
     	//Wait until the initial gardeners spawn before planting trees
     	if(rc.getRoundNum() > 11){
     		//Only plant trees if it is safe around the gardener
@@ -20,7 +21,9 @@ public strictfp class TaskGarden2 extends Task {
     		for(int i = 0; i<info.length; i++){
     			if(info[i].getType() == RobotType.LUMBERJACK ||
     					info[i].getType() == RobotType.SOLDIER ||
-    					info[i].getType() == RobotType.TANK){
+    					info[i].getType() == RobotType.TANK||
+    					info[i].getType() == RobotType.SCOUT){
+    				Broadcast.callForHelp(info[i]);
     				isInDanger = true;
     				break;
     			}
@@ -28,11 +31,11 @@ public strictfp class TaskGarden2 extends Task {
     		if(!spawned_guard && rc.getTeamBullets() >= 100.0f){    		    
     			int random = rand.nextInt(3) + 1;
     			//for now random with 2:1 LJ to soldier ratio
-    			if(random != 2) { //33%
+    			if(random != 2) { //66%
 	    			if(rc.canBuildRobot(RobotType.LUMBERJACK, guard_spawn_direction)){
 	    				rc.buildRobot(RobotType.LUMBERJACK, guard_spawn_direction);
 	    			}
-    			} else { //166%
+    			} else { //33%
 	    			if(rc.canBuildRobot(RobotType.SOLDIER, guard_spawn_direction)){
 	    				rc.buildRobot(RobotType.SOLDIER, guard_spawn_direction);
 	    			}    				

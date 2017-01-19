@@ -42,7 +42,18 @@ public strictfp class Broadcast {
     			break;
     	}
     }
-    public static void callForHelp(MapLocation s, int priority) {
-    	
+    private static int expirationThreshold = 2; //amount of turns passed for a job to expire
+    public static boolean hasJob(int team) throws GameActionException {
+    	return Math.abs(RobotPlayer.rc.readBroadcast(team*10+12)-RobotPlayer.rc.getRoundNum()) >= expirationThreshold;
+    }
+    public static void callForHelp(RobotInfo threat) throws GameActionException {
+    	MapLocation threatLoc = threat.getLocation();
+    	if(!hasJob(1)) {
+    		broadcastKillRequest(threatLoc, 1);
+    	} else if(!hasJob(2)) {
+    		broadcastKillRequest(threatLoc, 2);
+    	} else if(!hasJob(3)) {
+    		broadcastKillRequest(threatLoc, 3);
+    	}
     }
 }

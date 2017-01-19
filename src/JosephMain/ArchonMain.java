@@ -15,7 +15,16 @@ public strictfp class ArchonMain {
 
             // Try/catch blocks stop unhandled exceptions, which cause your robot to explode
             try {
-
+        		RobotInfo[] enemies = rc.senseNearbyRobots(3, rc.getTeam().opponent());
+        		for(int i = 0; i<enemies.length; i++){
+        			if(enemies[i].getType() == RobotType.LUMBERJACK ||
+        					enemies[i].getType() == RobotType.SOLDIER ||
+        					enemies[i].getType() == RobotType.TANK||
+        					enemies[i].getType() == RobotType.SCOUT){
+        				Broadcast.callForHelp(enemies[i]);
+        				break;
+        			}
+        		}
                 // Generate a random direction
                 Direction dir = RobotPlayer.randomDirection();
 
