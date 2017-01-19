@@ -8,6 +8,7 @@ public strictfp class TaskGarden2 extends Task {
 	boolean isInDanger = false;
 	boolean spawned_guard = false;
 	Direction guard_spawn_direction;
+	Random rand = new Random();
 	int guard_spawn_id;
 	
     @Override
@@ -27,8 +28,7 @@ public strictfp class TaskGarden2 extends Task {
     				break;
     			}
     		}
-    		if(!spawned_guard && rc.getTeamBullets() >= 100.0f){
-    		    Random rand = new Random();
+    		if(!spawned_guard && rc.getTeamBullets() >= 100.0f){    		    
     			int random = rand.nextInt(3) + 1;
     			//for now random with 2:1 LJ to soldier ratio
     			if(random != 3) { //1 and 2

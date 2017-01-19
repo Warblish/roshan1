@@ -49,6 +49,9 @@ public strictfp class Movement {
             	for(int i = 0; i < trees.length; i++) {
             		TreeInfo tree = trees[i];
             		if(tree.getTeam() != rc.getTeam()) { //not friendly tree
+            			if(tree.getTeam() == Team.NEUTRAL && rc.canShake(tree.getLocation())) {
+            				rc.shake(tree.getLocation());
+            			}
             			if(Math.abs(dir.degreesBetween(new Direction(rc.getLocation(), tree.getLocation()))) < chopDegreeThreshold) {
             			//if the trees direction is within 40 (or threshold) degrees of our direction
             				if(rc.canChop(tree.getLocation())) {
@@ -100,6 +103,9 @@ public strictfp class Movement {
             	for(int i = 0; i < trees.length; i++) {
             		TreeInfo tree = trees[i];
             		if(tree.getTeam() != rc.getTeam()) { //not friendly tree
+            			if(tree.getTeam() == Team.NEUTRAL && rc.canShake(tree.getLocation())) {
+            				rc.shake(tree.getLocation());
+            			}
             			if(Math.abs(dir.degreesBetween(new Direction(rc.getLocation(), tree.getLocation()))) < chopDegreeThreshold) {
             			//if the trees direction is within 40 (or threshold) degrees of our direction
             				if(rc.canChop(tree.getLocation())) {
@@ -192,6 +198,9 @@ public strictfp class Movement {
             	for(int i = 0; i < trees.length; i++) {
             		TreeInfo tree = trees[i];
             		if(tree.getTeam() != rc.getTeam()) { //not friendly tree
+            			if(tree.getTeam() == Team.NEUTRAL && rc.canShake(tree.getLocation())) {
+            				rc.shake(tree.getLocation());
+            			}
             			if(Math.abs(dir.degreesBetween(new Direction(rc.getLocation(), tree.getLocation()))) < chopDegreeThreshold) {
             			//if the trees direction is within 40 (or threshold) degrees of our direction
             				if(rc.canChop(tree.getLocation())) {
