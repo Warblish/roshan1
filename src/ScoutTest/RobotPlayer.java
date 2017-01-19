@@ -84,7 +84,7 @@ public strictfp class RobotPlayer {
 					if(target_robot != null){
 						//If a target robot has already been selected
 						//Find trees around that target gardener
-						if(rc.getLocation().distanceTo(target_robot.getLocation()) > 4.0f){
+						if(rc.getLocation().distanceTo(target_robot.getLocation()) < 4.0f){
 							//Travel closer to the target
 							//Find trees around that target gardener
 							TreeInfo[] tree_targets = rc.senseNearbyTrees(target_robot.getLocation(), farm_size, rc.getTeam().opponent());
@@ -99,6 +99,8 @@ public strictfp class RobotPlayer {
 								rc.fireSingleShot(rc.getLocation().directionTo(target_robot.getLocation()));;
 								//No trees to be seen! Just attack the gardener
 							}
+						} else{
+							tryMove(rc.getLocation().directionTo(target_robot.getLocation()));
 						}
 					} else{
 						Direction dir = RobotPlayer.randomDirection();
