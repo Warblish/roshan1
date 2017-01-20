@@ -15,6 +15,9 @@ import battlecode.common.*;
 //81, 82, 83 -> channel for help, higher value = high value defense mission
 //91, 92, 93 -> channel for amount of deaths per team
 
+//420 -> enemies spotted by guardeners (are we being invaded)
+//421 -> scouts spotted (useful for macro)
+
 //STATIC CLASS TO HANDLE BROADCASTING
 public strictfp class Broadcast {
     static RobotController rc;
@@ -46,7 +49,11 @@ public strictfp class Broadcast {
     public static boolean hasJob(int team) throws GameActionException {
     	return Math.abs(RobotPlayer.rc.readBroadcast(team*10+12)-RobotPlayer.rc.getRoundNum()) >= expirationThreshold;
     }
-    public static void callForHelp(RobotInfo threat) throws GameActionException {
+    public static void broadcastThreat(RobotInfo threat) throws GameActionException {
+    	RobotPlayer.rc.broadcast(420,RobotPlayer.rc.readBroadcast(420));
+    	if(threat.getType() == RobotType.SCOUT) {
+    		RobotPlayer.rc.broadcast(421,RobotPlayer.rc.readBroadcast(420));
+    	}
     	MapLocation threatLoc = threat.getLocation();
     	if(!hasJob(1)) {
     		broadcastKillRequest(threatLoc, 1);

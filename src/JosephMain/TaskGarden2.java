@@ -24,7 +24,7 @@ public strictfp class TaskGarden2 extends Task {
     					info[i].getType() == RobotType.SOLDIER ||
     					info[i].getType() == RobotType.TANK||
     					info[i].getType() == RobotType.SCOUT){
-    				Broadcast.callForHelp(info[i]);
+    				Broadcast.broadcastThreat(info[i]);
     				isInDanger = true;
     				break;
     			}
