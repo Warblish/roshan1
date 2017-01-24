@@ -56,16 +56,16 @@ public strictfp class ArchonMain {
             			System.out.println("ARCHON FAILED TO SPAWN FARMER: NO SUITABLE LOCATION");
             			//Try to spawn gardener in 4 random cardinal directions as a last ditch effort
             		} 
-                } else if (rc.getRoundNum() > 21 && rc.readBroadcast(421) == 0) { //no emeies spotted SPAM GARDENERS
+                } else if (rc.getRoundNum() > 60 && rc.readBroadcast(421) == 0) { //no emeies spotted SPAM GARDENERS
                 	tryHire();
-                } else if (rc.getRoundNum() > 21 && rc.readBroadcast(420) < 3) {
+                } else if (rc.getRoundNum() > 60 && rc.readBroadcast(420) < 3) {
                 	//some enemies, can macro this later
-                	if(rc.getRoundNum() - lastHire >= 30) { //hire every 20 turns? need to improve this
+                	if(rc.getRoundNum() - lastHire >= 100) { //hire every 20 turns? need to improve this
                 		tryHire();
                 	}
                 } else {
                 	//otherwise dont spend on gardener, buy units instead
-                	if(rc.getRoundNum() - lastHire >= 80) { //hire every 80 turns? need to improve this
+                	if(rc.getRoundNum() - lastHire >= 250) { //hire every 80 turns? need to improve this
                 		tryHire();
                 	}
                 }
@@ -73,7 +73,7 @@ public strictfp class ArchonMain {
                 //
                 if(rc.getRoundNum() > 700 && (rc.readBroadcast(91)+rc.readBroadcast(92)+rc.readBroadcast(93)) < 5) { //less than 5 lumberjacks have died
                 	System.out.println("ATTTTAAAAACCCCKKKKKKK " + (rc.readBroadcast(91)+rc.readBroadcast(92)+rc.readBroadcast(93)) + "have died");
-                	Broadcast.broadcastKillRequest(enemy_archon_locs[0], 1);
+                	Broadcast.broadcastKillRequest(enemy_archon_locs[0], 1, true);
                 }
 
                 // Move randomly
@@ -97,6 +97,7 @@ public strictfp class ArchonMain {
     			rc.broadcast(11, 1);
     			rc.hireGardener(dir);
     			lastHire = rc.getRoundNum();
+    			break;
 			} else{
 				dir = RobotPlayer.randomDirection();
 			}

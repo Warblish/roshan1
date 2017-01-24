@@ -39,9 +39,9 @@ public strictfp class TaskTrackKillSoldier extends Task {
         if(robots.length > 0) {
             MapLocation enemyLocation = robots[0].getLocation();
             if(squad_number != 0){
-            	Broadcast.broadcastKillRequest(enemyLocation, squad_number);
+            	Broadcast.broadcastKillRequest(enemyLocation, squad_number, false);
             } else{
-            	Broadcast.broadcastKillRequest(enemyLocation, 1);
+            	Broadcast.broadcastKillRequest(enemyLocation, 1, false);
             }
         } 
         //Check if the most recent broadcast was sent within the last 2 turns

@@ -12,6 +12,8 @@ public strictfp class TaskTrackKillLumberjack extends Task {
     private int buffer = 0;
     private int squad_number;
     public boolean teamSoloAttack = true;
+    private boolean onGuard = true;
+    private MapLocation guardPost;
     @Override
     public void runTurn() throws GameActionException {
     	RobotInfo[] robots = rc.senseNearbyRobots(RobotType.LUMBERJACK.bodyRadius+GameConstants.LUMBERJACK_STRIKE_RADIUS, enemy);
@@ -28,9 +30,9 @@ public strictfp class TaskTrackKillLumberjack extends Task {
         if(robots.length > 0) {
             MapLocation enemyLocation = robots[0].getLocation();
             if(squad_number != 0){
-            	Broadcast.broadcastKillRequest(enemyLocation, squad_number);
+            	Broadcast.broadcastKillRequest(enemyLocation, squad_number, RobotPlayer.rc.readBroadcast(13 + 10*squad_number)==1);
             } else{
-            	Broadcast.broadcastKillRequest(enemyLocation, 1);
+            	Broadcast.broadcastKillRequest(enemyLocation, 1, RobotPlayer.rc.readBroadcast(13 + 10*squad_number)==1);
             }
         } 
         //Check if the most recent broadcast was sent within the last 2 turns
@@ -57,16 +59,19 @@ public strictfp class TaskTrackKillLumberjack extends Task {
     		case(1): 
     			x_target = rc.readBroadcast(20);
     			y_target = rc.readBroadcast(21);
+    			onGuard = rc.readBroadcast(23)==0;
     			readBroadcast = true;
     			break;
     		case(2): 
     			x_target = rc.readBroadcast(30);
 				y_target = rc.readBroadcast(31);
+				onGuard = rc.readBroadcast(33)==0;
     			readBroadcast = true;
     			break;
     		case(3):
     			x_target = rc.readBroadcast(40);
 				y_target = rc.readBroadcast(41);
+				onGuard = rc.readBroadcast(43)==0;
     			readBroadcast = true;
     			break;
     		default:
@@ -93,23 +98,28 @@ public strictfp class TaskTrackKillLumberjack extends Task {
 	        	} else{
         		
         		
-            // Move Randomly
-	        	//if(hasSeenEnemy) {
-	        	//	Movement.wander(lastenemy);
-	        	//} else {
-	        		Movement.tryMove(randomDirection());
-	        	//}
+            // return pot
+		        	if(onGuard) {
+		        		if(rc.getLocation().distanceTo(guardPost) > .5) {
+		        			Movement.tryMove(rc.getLocation().directionTo(guardPost));
+		        		}
+		        	} else {
+		        		Movement.tryMove(randomDirection());
+		        	}
 	        		
 	        		
 	        	}
         	} else {
         		
-                // Move Randomly
-    	        	//if(hasSeenEnemy) {
-    	        	//	Movement.wander(lastenemy);
-    	        	//} else {
-    	        		Movement.tryMove(randomDirection());
-    	        	//}
+                // return to post
+	        	if(onGuard) {
+	        		if(rc.getLocation().distanceTo(guardPost) > .5) {
+	        			Movement.tryMove(rc.getLocation().directionTo(guardPost));
+	        		}
+	        	} else {
+	        		Movement.tryMove(randomDirection());
+	        	}
+        		
         	}       	
         }
     	super.runTurn();
@@ -117,6 +127,7 @@ public strictfp class TaskTrackKillLumberjack extends Task {
     
     public TaskTrackKillLumberjack() {
     	super();
+    	guardPost = rc.getLocation();
     }
     public void setSquadNumber(int n){
     	this.squad_number = n;

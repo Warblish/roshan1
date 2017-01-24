@@ -16,28 +16,26 @@ public strictfp class LumberjackMain {
 	    main();
 	}
     public static void main() throws GameActionException {
-    	//if(rc.readBroadcast(7) != 1) {
-	    	/*task1 = new TaskTravelTo();
-		   	((TaskTravelTo) task1).setThreshold(2);
-		
-	    	task1.setTrigger(new String[] {"ENEMYROBOTS"});
-	    	while(!task1.isTriggered()){
-	    		try {
-	            	if(DataMain.archon_locs.length > id){
-	                	((TaskTravelTo) task1).setTarget(DataMain.archon_locs[id]);	
-	            	}
-	            	task1.runTurn();
-	            	if(task1.isComplete()){
-	            		Clock.yield();
-	            		break;
-	            	}
-	                Clock.yield();
-	            } catch (Exception e) {
-	                System.out.println("Lumberjack Exception");
-	                e.printStackTrace();
-	            }
-	    	}*/
-    	//}
+    	int starttime = RobotPlayer.rc.getRoundNum();
+        RobotInfo[] robots = rc.senseNearbyRobots(-1);
+
+        // If there is a robot, move towards it
+        boolean gardenFlag = false;
+        boolean enemySpotted = false;
+        Direction guardDir = RobotPlayer.randomDirection();
+        for(RobotInfo r : robots) {
+        	if(r.getTeam() == rc.getTeam().opponent()) {
+        		enemySpotted = true;
+        		break;
+        	} else if(r.getTeam() == rc.getTeam() && r.getType() == RobotType.GARDENER && !gardenFlag) {
+        		gardenFlag = true;
+        		guardDir = rc.getLocation().directionTo(r.getLocation()).opposite();
+        	}
+        }
+    	while(rc.getRoundNum() - starttime <= 5 && gardenFlag){
+    		Movement.tryMoveSwerve(guardDir);
+    		Clock.yield();
+    	}
     	task2 = new TaskTrackKillLumberjack();
     	((TaskTrackKillLumberjack)task2).setSquadNumber(squad_number);
     	while(!task2.isComplete()){

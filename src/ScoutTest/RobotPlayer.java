@@ -87,8 +87,14 @@ public strictfp class RobotPlayer {
 				//Code for assassinating gardeners
 				RobotInfo[] nearbyRobots = rc.senseNearbyRobots(-1, enemy);
 				ArrayList<RobotInfo> nearbyRobotsList = new ArrayList<RobotInfo>();
+				int offensive_unit_amt = 0;
 				for(RobotInfo rob : nearbyRobots){
 					nearbyRobotsList.add(rob);
+					if(rob.getType() == RobotType.SOLDIER ||
+							rob.getType() == RobotType.LUMBERJACK ||
+							rob.getType() == RobotType.TANK){
+						offensive_unit_amt++;
+					}
 				}
 				if(nearbyRobots.length > 0){
 					//There are enemy robots nearby
@@ -98,6 +104,24 @@ public strictfp class RobotPlayer {
 							if(rob.getType() == RobotType.GARDENER){
 								target_robot = rob;
 								break;
+							}
+						}
+						//If there are no targets and there is only one lumberjack nearby, attack
+						//If there are no targets still (no gardenerss), check for archons
+						if(target_robot == null){
+							for(RobotInfo rob : nearbyRobotsList){
+								if(rob.getType() == RobotType.SOLDIER ||
+										rob.getType() == RobotType.LUMBERJACK ||
+										rob.getType() == RobotType.TANK){
+									if(offensive_unit_amt <= 1){
+										target_robot = rob;
+										break;
+									}
+								}
+								if(rob.getType() == RobotType.ARCHON){
+									target_robot = rob;
+									break;
+								}
 							}
 						}
 					}
@@ -114,18 +138,26 @@ public strictfp class RobotPlayer {
 								if(rc.canMove(tree_targets[0].getLocation())){
 									rc.move(tree_targets[0].getLocation());
 								}
-								rc.fireSingleShot(rc.getLocation().directionTo(tree_targets[0].getLocation()));
+								rc.fireSingleShot(rc.getLocation().directionTo(target_robot.getLocation()));
+								
 							} else{
 								tryMove(rc.getLocation().directionTo(target_robot.getLocation()));
 								rc.fireSingleShot(rc.getLocation().directionTo(target_robot.getLocation()));;
 								//No trees to be seen! Just attack the gardener
 							}
+							//Resets the target robot if it died in sensor range
+							if(!rc.canSenseRobot(target_robot.ID)){
+								target_robot = null;
+							}
 						} else{
-							tryMove(rc.getLocation().directionTo(target_robot.getLocation()));
+							Direction attack_dir = rc.getLocation().directionTo(target_robot.getLocation());
+							if(!checkBulletCollision(rc.getLocation(), attack_dir, 2.0f)){
+								tryMove(rc.getLocation().directionTo(target_robot.getLocation()));
+							}
 						}
 					} else{
 						Direction dir = RobotPlayer.randomDirection();
-						if(rc.canMove(dir)){
+						if(rc.canMove(dir) && !checkBulletCollision(rc.getLocation(), dir, 2.0f)){
 							rc.move(dir);
 						}
 					}
@@ -143,6 +175,17 @@ public strictfp class RobotPlayer {
 		}
 		
 	}
+    
+    static boolean checkBulletCollision(MapLocation robot_location, Direction dir_movement, float distance){
+    	BulletInfo[] bullets = rc.senseNearbyBullets(-1);
+    	MapLocation new_loc = robot_location.add(dir_movement, distance);
+    	for(BulletInfo bullet : bullets){
+    		if(bullet.getLocation().add(bullet.getDir(), bullet.getSpeed()).distanceTo(new_loc) < 0.5f){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
 
     static void runArchon() throws GameActionException {
         System.out.println("I'm an archon!");
